@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Watcher</title>
+    <style>
+      * {
+        font-family: 'Courier New', Courier, monospace;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        display: grid;
+        grid-template-rows: 1fr auto;
+        height: 100vh;
+        background-color: #0A1929;
+        color: white;
+      }
+
+      main {
+        overflow-y: auto;
+      }
+
+      main > .content {
+        padding: 20px;
+        position: relative;
+      }
+
+
+      main > .content > .list-header {
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      main > .content .show {
+        display: grid;
+        grid-gap: 10px;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      main > .content .show:last-child {
+        margin-bottom: 0;
+      }
+
+      main > .content .show > img {
+        height: 100px;
+        max-height: 100px;
+        border-radius: 7px;
+      }
+
+      main > .content .show > img.action {
+        height: 32px;
+        width: 32px;
+        cursor: pointer;
+        margin-right: 4px;
+      }
+
+      main > .content > form {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      main > .content > form > button {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 5px 5px 0 5px;
+        border-radius: 5px;
+        font-size: 1.2rem;
+      }
+
+      main > .content > form > button > img {
+        height: 28px;
+        width: 28px;
+      }
+
+      main > .content > form > input {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        padding: 5px 8px;
+        border-radius: 5px;
+        font-size: 1.2rem;
+        min-width: 0;
+        line-height: 1.2rem;
+      }
+
+      main > .content > #search-container {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 80px 20px 20px 20px;
+        background-color: rgba(0, 0, 0, 0.9);
+        overflow-y: auto;
+      }
+
+      main > .content > #search-container > #close-search {
+        position: fixed;
+        top: 26px;
+        right: 26px;
+        height: 28px;
+        width: 28px;
+        cursor: pointer;
+      }
+
+      main > .content > .backup-restore-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 20px;
+        text-align: center;
+        margin-top: 20px;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.3);
+      }
+
+      main > .content > .backup-restore-actions input {
+        display: none;
+      }
+
+      main > .content > .backup-restore-actions label {
+        display: block;
+        cursor: pointer;
+      }
+
+      footer > nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        border-top: solid rgba(255, 255, 255, 0.1) 2px;
+      }
+
+      footer > nav > div {
+        text-align: center;
+        padding: 16px;
+        cursor: pointer;
+      }
+
+      footer > nav > div.selected {
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div id="content-shows" class="content">
+        <form>
+          <input type="text" name="searchInput" />
+          <button type="submit">
+            <img src="./img/search.svg" />
+          </button>
+        </form>
+
+        <div id="show-list"></div>
+        
+        <div class="backup-restore-actions">
+          <div id="backup">Backup</div>
+          <div>
+            <label for="restore">Restore</label>
+            <input type="file" id="restore" />
+          </div>
+        </div>
+
+        <div id="search-container">
+          <div id="search-results"></div>
+          <img src="./img/close.svg" id="close-search" />
+        </div>
+      </div>
+      <div id="content-recent" class="content"></div>
+      <div id="content-upcoming" class="content"></div>
+    </main>
+    <footer>
+      <nav>
+        <div id="tab-shows">Shows</div>
+        <div id="tab-recent">Recent</div>
+        <div id="tab-upcoming">Upcoming</div>
+      </nav>
+    </footer>
+
+    <script>
+      // content: shows|recent|upcoming
+      function navigateTo(content) {
+        localStorage.setItem('activeTab', content);
+
+        const links = document.querySelector('nav').children;
+        Array.from(links).filter((c) => c.id.includes(content)).map((c) => c.classList.add('selected'));
+        Array.from(links).filter((c) => !c.id.includes(content)).map((c) => c.classList.remove('selected'));
+        
+        const contents = document.querySelector('main').children;
+        Array.from(contents).filter((c) => c.id.includes(content)).map((c) => c.style.display = 'block');
+        Array.from(contents).filter((c) => !c.id.includes(content)).map((c) => c.style.display = 'none');
+      }
+
+      // Init storage
+      if (!localStorage.getItem('shows')) {
+        localStorage.setItem('shows', JSON.stringify([]));
+      }
+      
+      function getShows() {
+        return JSON.parse(localStorage.getItem('shows'));
+      }
+
+      async function saveShow(show) {
+        if (!getShows().find((s) => s.id === show.id)) {
+          const res = await fetch(`https://api.tvmaze.com/shows/${show.id}/episodes`);
+          const episodes = await res.json();
+          localStorage.setItem('shows', JSON.stringify([...getShows(), { ...show, episodes }]));
+        }
+      }
+
+      function removeShow(showId) {
+        if (getShows().find((s) => s.id === showId)) {
+          localStorage.setItem('shows', JSON.stringify(getShows().filter((s) => s.id !== showId)));
+        }
+      }
+
+      async function fetchShows(searchText) {
+        if (searchText) {
+          const res = await fetch(`https://api.tvmaze.com/search/shows?q=${searchText}`);
+          const json = await res.json();
+          return json.map((j) => j.show);
+        }
+      }
+
+      // action: add|remove
+      function createShowElement(show, action) {
+        const showImg = document.createElement('img');
+        showImg.src = show.image ? show.image.medium : './img/placeholder.svg';
+
+        const showInfo = document.createElement('div');
+        
+        const showName = document.createElement('div');
+        showName.textContent = show.name;
+
+        const showRelease = document.createElement('div');
+        showRelease.textContent = show.premiered
+          ? show.premiered.slice(0, 4)
+          : show.status;
+
+        showInfo.appendChild(showName);
+        showInfo.appendChild(showRelease);
+
+        let actionElement = document.createElement('img');
+        actionElement.className = 'action'
+
+        if (action === 'add') {
+          actionElement.src = './img/add.svg';
+          actionElement.addEventListener('click', async () => {
+            await saveShow(show);
+            renderShows();
+            renderEpisodes();
+          })
+        } else if (action === 'remove') {
+          actionElement.src = './img/remove.svg';
+          actionElement.addEventListener('click', () => {
+            removeShow(show.id);
+            renderShows();
+            renderEpisodes();
+          })
+        }
+
+        const showContainer = document.createElement('div');
+        showContainer.className = 'show';
+        showContainer.appendChild(showImg);
+        showContainer.appendChild(showInfo);
+        showContainer.appendChild(actionElement);
+
+        return showContainer;
+      }
+
+      function renderSearchResults(shows = []) {
+        const documentFragment = document.createDocumentFragment();
+        for (const show of shows) {
+          documentFragment.appendChild(createShowElement(show, 'add'));
+        }
+        searchResults.appendChild(documentFragment);
+        searchContainer.style.display = 'block';
+      }
+
+      function renderShows() {
+        const showList = document.getElementById('show-list');
+        showList.replaceChildren();
+        
+        const documentFragment = document.createDocumentFragment();
+        const shows = getShows().sort((s1, s2) => s1.name.localeCompare(s2.name));
+        for (const show of shows) {
+          documentFragment.appendChild(createShowElement(show, 'remove'));
+        }
+        showList.appendChild(documentFragment);
+      }
+
+      function renderEpisodes(groupedEpisodes) {
+        ['recent', 'upcoming'].forEach((content) => {
+          const contentTab = document.getElementById(`content-${content}`);
+          contentTab.replaceChildren();
+          const documentFragment = document.createDocumentFragment();
+
+          Object.entries(getGroupedEpisodes(content)).forEach(([date, episodes]) => {
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+            const airDate = new Date(date).toLocaleDateString('en-GB', dateOptions);
+
+            const dateElement = document.createElement('div');
+            dateElement.className = 'list-header';
+            dateElement.textContent = airDate;
+            documentFragment.appendChild(dateElement)
+            
+            episodes.forEach((episode) => {
+              const episodeElement = document.createElement('div');
+              episodeElement.className = 'show'; // TODO: rename class
+
+              const showImageElement = document.createElement('img');
+              showImageElement.src = episode.showImage;
+
+              const episodeInfoElement = document.createElement('div');
+              const showNameElement = document.createElement('div');
+              showNameElement.textContent = episode.showName;
+              const episodeNumberElement = document.createElement('div');
+              episodeNumberElement.textContent =
+                `${episode.episodeNumber}x${episode.episodeSeason.toString().padStart(2, '0')} ${episode.episodeName}`;
+
+              episodeInfoElement.appendChild(showNameElement);
+              episodeInfoElement.appendChild(episodeNumberElement);
+
+              episodeElement.appendChild(showImageElement);
+              episodeElement.appendChild(episodeInfoElement);
+
+              documentFragment.appendChild(episodeElement);
+            });
+          });
+
+          contentTab.appendChild(documentFragment);
+        });
+      }
+
+      // content: recent|upcoming
+      function getGroupedEpisodes(content) {
+        return getShows().flatMap((s) => {
+          return s.episodes.map((e) => ({
+            showName: s.name,
+            showImage: s.image ? s.image.medium : './img/placeholder.svg',
+            airDate: e.airdate,
+            airStamp: e.airstamp,
+            episodeSeason: e.season,
+            episodeNumber: e.number,
+            episodeName: e.name,
+          }));
+        }).filter((e) => {
+          if (content === 'recent') {
+            return new Date(e.airDate) < new Date();
+          } else if (content === 'upcoming') {
+            return new Date(e.airDate) > new Date();
+          }
+          return false;
+        }).sort((e1, e2) => {
+          if (content === 'recent') {
+            return new Date(e2.airDate) - new Date(e1.airDate); 
+          }
+          return new Date(e1.airDate) - new Date(e2.airDate); 
+        }).reduce((group, episode) => {
+          const { airDate } = episode;
+          group[airDate] = group[airDate] ?? [];
+          group[airDate].push(episode);
+          return group;
+        }, {});
+      }
+
+      // Render contents
+      renderShows();
+      renderEpisodes();
+
+      // Initialize navigation
+      navigateTo(localStorage.getItem('activeTab') || 'recent')
+
+      document.getElementById('tab-shows').addEventListener('click', () => navigateTo('shows'));
+      document.getElementById('tab-recent').addEventListener('click', () => navigateTo('recent'));
+      document.getElementById('tab-upcoming').addEventListener('click', () => navigateTo('upcoming'));
+
+      // Initialize search
+      const searchContainer = document.getElementById('search-container');
+      const searchResults = document.getElementById('search-results');
+
+      document.getElementById('close-search').addEventListener('click', () => {
+        searchContainer.style.display = 'none';
+        searchResults.replaceChildren();
+      })
+
+      const form = document.querySelector('form')
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const searchInput = formData.get('searchInput');
+        const shows = await fetchShows(searchInput);
+        renderSearchResults(shows);
+      });
+
+      // Initialize backup/restore
+      document.getElementById('restore').addEventListener('click', () => {
+        const fileSelector = document.getElementById('restore');
+        fileSelector.addEventListener('change', (event) => {
+          const fileList = event.target.files;
+          const file = fileList[0];
+
+          if (file) {
+            const reader = new FileReader();
+            reader.readAsText(file, "UTF-8");
+            reader.onload = function (e) {
+              try {
+                const showsToRestore = JSON.parse(e.target.result);
+                showsToRestore.map(saveShow);
+                setTimeout(() => renderShows(), 1000);
+              } catch (err) {
+                console.error('Restore parsing error', err);
+              }
+            }
+          }
+        });
+      });
+
+      document.getElementById('backup').addEventListener('click', () => {
+        const data = `data:text/json;charset=utf-8,${encodeURIComponent(localStorage.getItem('shows'))}`;
+        const downloadElement = document.createElement('a');
+        downloadElement.setAttribute('href',  data);
+        downloadElement.setAttribute('download', `watcher-backup-${new Date().toISOString()}.json`);
+        document.body.appendChild(downloadElement);
+        downloadElement.click();
+        document.body.removeChild(downloadElement); 
+      });
+    </script>
+  </body>
+</html>
