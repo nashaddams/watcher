@@ -64,6 +64,11 @@
         margin-bottom: 5px;
       }
 
+      main > .content .item > .item-info > div.item-info-secondary {
+        margin-top: 5px;
+        color: rgba(255, 255, 255, .4);
+      }
+
       main > .content .item > img.action {
         height: 32px;
         width: 32px;
@@ -200,7 +205,16 @@
       </nav>
     </footer>
 
+    <script src="./lib/dayjs-1.11.7/dayjs.min.js"></script>
+    <script src="./lib/dayjs-1.11.7/duration.js"></script>
+    <script src="./lib/dayjs-1.11.7/relativeTime.js"></script>
+    <script src="./lib/dayjs-1.11.7/advancedFormat.js"></script>
+
     <script>
+      dayjs.extend(window.dayjs_plugin_duration);
+      dayjs.extend(window.dayjs_plugin_relativeTime);
+      dayjs.extend(window.dayjs_plugin_advancedFormat);
+
       // content: shows|recent|upcoming
       function navigateTo(content) {
         localStorage.setItem('activeTab', content);
@@ -320,15 +334,22 @@
           contentTab.replaceChildren();
           const fragment = document.createDocumentFragment();
 
+          const sevenDaysFromNow = dayjs(dayjs().format('YYYY-MM-DD')).add(1, 'week');
+          const sevenDaysAgo = dayjs(dayjs().format('YYYY-MM-DD')).subtract(1, 'week')
+
           Object.entries(getGroupedEpisodes(content)).forEach(([date, episodes]) => {
-            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const airDate = new Date(date).toLocaleDateString('en-GB', dateOptions);
+            const airDate = dayjs(date);
+            const airDateString =
+              content === 'upcoming' && airDate < sevenDaysFromNow ||
+              content === 'recent' && airDate > sevenDaysAgo
+                ? airDate.format('dddd')
+                : airDate.format('dddd, MMMM Do');
 
             const dateElement = document.createElement('div');
             dateElement.className = 'list-header';
-            dateElement.textContent = airDate;
+            dateElement.textContent = airDateString;
             fragment.appendChild(dateElement);
-            
+
             episodes.forEach((episode) => {
               const episodeItem = document.createElement('div');
               episodeItem.className = 'item';
@@ -344,9 +365,13 @@
               const episodeNumber = document.createElement('div');
               episodeNumber.textContent =
                 `${episode.episodeNumber}x${episode.episodeSeason.toString().padStart(2, '0')} ${episode.episodeName}`;
+              const airTimeDelta = document.createElement('div');
+              airTimeDelta.className = 'item-info-secondary'
+              airTimeDelta.textContent = dayjs.duration(dayjs(episode.airStamp).diff(dayjs())).humanize(true);
 
               episodeInfo.appendChild(showName);
               episodeInfo.appendChild(episodeNumber);
+              episodeInfo.appendChild(airTimeDelta);
 
               episodeItem.appendChild(showImage);
               episodeItem.appendChild(episodeInfo);
@@ -445,7 +470,10 @@
             reader.onload = function (e) {
               const showsToRestore = JSON.parse(e.target.result);
               showsToRestore.map(saveShow);
-              setTimeout(() => renderShows(), 1000);
+              setTimeout(() => {
+                renderShows();
+                renderEpisodes();
+              }, 1000);
             }
           }
         });
