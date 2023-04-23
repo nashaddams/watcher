@@ -80,14 +80,14 @@
         margin-right: 5px;
       }
 
-      main > .content > form {
+      main > .content form {
         display: grid;
         grid-template-columns: 1fr auto;
         grid-gap: 10px;
         margin-bottom: 20px;
       }
 
-      main > .content > form > button {
+      main > .content form > button {
         background: rgba(255, 255, 255, 0.1);
         border: none;
         color: white;
@@ -97,12 +97,12 @@
         font-size: 1.2rem;
       }
 
-      main > .content > form > button > img {
+      main > .content form > button > img {
         height: 28px;
         width: 28px;
       }
 
-      main > .content > form > input {
+      main > .content form > input {
         background: rgba(255, 255, 255, 0.1);
         border: none;
         color: white;
@@ -116,6 +116,13 @@
       /* Show indicator for show detail overlay */
       main > .content #show-list img {
         cursor: pointer;
+      }
+
+      main > .content #settings {
+        text-align: center;
+        margin-top: 20px;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.4);
       }
 
       main > .content > .overlay {
@@ -176,21 +183,28 @@
         cursor: pointer;
       }
 
-      main > .content > .backup-restore-actions {
+      main > .content > .overlay#settings-container .backup-restore-actions {
         display: grid;
         grid-template-columns: 1fr 1fr;
         grid-gap: 20px;
-        text-align: center;
-        margin-top: 20px;
-        cursor: pointer;
-        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 20px;
       }
 
-      main > .content > .backup-restore-actions input {
+      main > .content > .overlay#settings-container .backup-restore-actions > * {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+      }
+
+      main > .content > .overlay#settings-container .backup-restore-actions input {
         display: none;
       }
 
-      main > .content > .backup-restore-actions label {
+      main > .content > .overlay#settings-container .backup-restore-actions label {
         display: block;
         cursor: pointer;
       }
@@ -219,7 +233,7 @@
   <body>
     <main>
       <div id="content-shows" class="content">
-        <form>
+        <form id="search-form">
           <input type="text" name="search-input" id="search-input" />
           <button type="submit">
             <img src="./img/search.svg" />
@@ -227,14 +241,8 @@
         </form>
 
         <div id="show-list"></div>
-        
-        <div class="backup-restore-actions">
-          <div id="backup">Backup</div>
-          <div>
-            <label for="restore">Restore</label>
-            <input type="file" id="restore" />
-          </div>
-        </div>
+
+        <div id="settings">Settings</div>
 
         <div id="search-container" class="overlay">
           <div id="search-results"></div>
@@ -244,6 +252,21 @@
         <div id="detail-container" class="overlay">
           <div id="detail-info"></div>
           <img src="./img/close.svg" id="close-detail" class="overlay-close" />
+        </div>
+
+        <div id="settings-container" class="overlay">
+          <div id="settings-content">
+            <h1>Settings</h1>
+            <h2>Backup & Restore</h2>
+            <div class="backup-restore-actions">
+              <div id="backup">Backup</div>
+              <div>
+                <label for="restore">Restore</label>
+                <input type="file" id="restore" />
+              </div>
+            </div>
+          </div>
+          <img src="./img/close.svg" id="close-settings" class="overlay-close" />
         </div>
       </div>
       <div id="content-recent" class="content"></div>
@@ -531,6 +554,16 @@
       document.getElementById('tab-recent').addEventListener('click', () => navigateTo('recent'));
       document.getElementById('tab-upcoming').addEventListener('click', () => navigateTo('upcoming'));
 
+      // Initialize settings
+      const settingsContainer = document.getElementById('settings-container');
+
+      document.getElementById('settings').addEventListener('click', () => {
+        settingsContainer.style.display = 'block';
+      });
+      document.getElementById('close-settings').addEventListener('click', () => {
+        settingsContainer.style.display = 'none';
+      })
+
       // Initialize search
       const searchContainer = document.getElementById('search-container');
       const searchResults = document.getElementById('search-results');
@@ -540,8 +573,8 @@
         searchResults.replaceChildren();
       })
 
-      const form = document.querySelector('form')
-      form.addEventListener('submit', async (e) => {
+      const searchForm = document.getElementById('search-form')
+      searchForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const searchInput = formData.get('search-input');
