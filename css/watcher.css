@@ -224,6 +224,24 @@ main > .content > .overlay#settings-container .backup-restore-actions label {
   cursor: pointer;
 }
 
+main > .content > .overlay#load-container {
+  opacity: .9;
+}
+
+main > .content > .overlay#load-container > img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  animation: rotation 1.2s infinite linear;
+}
+
+@keyframes rotation {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(359deg); }
+}
+
 footer {
   padding-bottom: env(safe-area-inset-bottom);
 }

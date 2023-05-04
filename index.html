@@ -63,6 +63,10 @@
           </div>
           <img src="./img/close.svg" id="close-settings" class="overlay-close" />
         </div>
+
+        <div id="load-container" class="overlay">
+          <img src="./img/load.svg" />
+        </div>
       </div>
       <div id="content-recent" class="content"></div>
       <div id="content-upcoming" class="content"></div>
@@ -323,25 +327,17 @@
       /**
        * Initialize application
        */
-      (async () => {
-        if (window.navigator.onLine) {
-          // Rehydrate show episodes when online
-          const shows = store.getShows();
-          for (const show of shows) {
-            try {
-              const showWithDetails = await api.fetchShowDetails(show.id);
-              store.saveShow(showWithDetails);
-            } catch(e) {
-              console.warn('[watcher] Unable to refresh show details.', e);
-            }
-          }
-        }
-
-        initializeApiUi(store.getTmdbApiKey());
-        navigateTo(localStorage.getItem('activeTab') || 'recent');
-        renderSavedItems();
-        renderRecentUpcoming();
-      })();
+      showLoadingIndicator();
+      Promise.all(store.getShows().map((s) => api.fetchShowDetails(s.id)))
+        .then((shows) => shows.map((s) => store.saveShow(s)))
+        .catch((e) => console.warn('Unable to refresh show details.', e))
+        .finally(() => {
+          initializeApiUi(store.getTmdbApiKey());
+          navigateTo(localStorage.getItem('activeTab') || 'recent');
+          renderSavedItems();
+          renderRecentUpcoming();
+          hideLoadingIndicator();
+        });
     </script>
   </body>
 </html>
