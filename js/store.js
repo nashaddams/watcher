@@ -5,6 +5,7 @@ class Store {
         tmdbApiKey: undefined,
         shows: [],
         movies: [],
+        f1: [],
       }))
     }
   }
@@ -85,5 +86,28 @@ class Store {
         movies: this.getMovies().filter((m) => m.id !== movieId),
       }));
     }
+  }
+
+  getF1() {
+    return this.#getStore().f1;
+  }
+
+  saveF1(f1Schedule) {
+    localStorage.setItem('watcher', JSON.stringify({
+      ...this.#getStore(),
+      f1: f1Schedule.races.map((r) => new ResultItem({
+        id: r.round,
+        image: './img/f1.svg',
+        name: `${r.name}, ${r.location}`,
+        releaseDate: new Date(r.sessions.gp),
+      })),
+    }));
+  }
+
+  removeF1() {
+    localStorage.setItem('watcher', JSON.stringify({
+      ...this.#getStore(),
+      f1: [],
+    }));
   }
 }
