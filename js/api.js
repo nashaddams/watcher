@@ -98,10 +98,32 @@ class Api {
     );
     const show = await res.json();
     const seasonPaths = [...Array(show.number_of_seasons).keys()].map(k => `season/${k + 1}`);
-    const showWithDetailsRes = await fetch(
-      `${this.baseUrl}/tv/${show.id}?api_key=${this.apiKey}&append_to_response=external_ids,${seasonPaths.join()}`
-    );
-    const showWithDetails = await showWithDetailsRes.json();
+
+    // Fetch chunks if there are many seasons to accomodate the append_to_response limit
+    const CHUNK_SIZE = 15;
+    const seasonPathChunks = seasonPaths.reduce((chunks, _, i) => {
+      if (i % CHUNK_SIZE === 0) {
+        chunks.push(seasonPaths.slice(i, i + CHUNK_SIZE));
+      }
+      return chunks;
+    }, []);
+
+    const showWithDetails = (await Promise.all(
+      seasonPathChunks
+        .map(async (spc) => {
+          const showWithDetailsRes = await fetch(
+            `${this.baseUrl}/tv/${show.id}?api_key=${this.apiKey}&append_to_response=external_ids,${spc.join()}`
+          );
+          return await showWithDetailsRes.json();
+        }))
+    ).reduce((show, value) => {
+      // Merge all seasons containing the episodes into the show object
+      return {
+        ...show,
+        ...value,
+      }
+    }, {});
+
     const episodes = seasonPaths.flatMap((sp) => {
       if (showWithDetails[sp]) {
         return showWithDetails[sp].episodes;
