@@ -109,6 +109,7 @@ function createListItemElement(item, action, actionFn) {
   }
 
   const itemElement = document.createElement('div');
+  itemElement.id = id;
   itemElement.className = 'item';
   itemElement.appendChild(imgElement);
   itemElement.appendChild(infoElement);

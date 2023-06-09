@@ -132,12 +132,27 @@
         const shows = store.getShows();
         const movies = store.getMovies();
 
+        const upToDelete = {}; // [showId]: true
+
         const showListElement = createListElement(shows, 'Shows', {
           action: 'remove',
           actionFn: (showId) => {
-            store.removeShow(showId);
-            renderSavedItems();
-            renderRecentUpcoming();
+            const deleteIconElement = document
+              .getElementById(showId)
+              .querySelector('[src="./img/remove.svg"]');
+
+            if (upToDelete[showId]) {
+              store.removeShow(showId);
+              renderSavedItems();
+              renderRecentUpcoming();
+
+              delete upToDelete[showId];
+            } else {
+              deleteIconElement.style.transition = 'transform 1s ease-in-out';
+              deleteIconElement.style.transform = 'rotate(90deg)';
+
+              upToDelete[showId] = true;
+            }
           },
         });
 
