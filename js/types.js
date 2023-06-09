@@ -8,7 +8,7 @@ class ResultItem {
     name = undefined,
     releaseDate = undefined,
   }) {
-    this.id = id,
+    this.id = id;
     this.image = image;
     this.name = name;
     this.releaseDate = releaseDate;
@@ -28,9 +28,10 @@ class SavedItem {
     status = undefined,
     genres = [],
     episodes = [],
+    cast = [],
     imdbUrl = undefined,
   }) {
-    this.id = id,
+    this.id = id;
     this.image = image;
     this.name = name;
     this.releaseDate = releaseDate;
@@ -38,6 +39,7 @@ class SavedItem {
     this.status = status;
     this.genres = genres;
     this.episodes = episodes;
+    this.cast = cast;
     this.imdbUrl = imdbUrl;
   }
 }
@@ -55,7 +57,7 @@ class RecentUpcomingItem {
     seasonNumber = undefined,
     showName = undefined,
   }) {
-    this.id = id,
+    this.id = id;
     this.image = image;
     this.name = name;
     this.releaseDate = releaseDate;

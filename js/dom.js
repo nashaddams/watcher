@@ -16,7 +16,7 @@ function handleImgLoadError(e) {
  * @param {Object} item show or movie
  */
 function createDetailsOverviewElement(item) {
-  const { name, image, details, releaseDate, status, genres, imdbUrl } = item;
+  const { name, image, details, releaseDate, status, genres, cast, imdbUrl } = item;
 
   const fragment = document.createDocumentFragment();
 
@@ -37,6 +37,11 @@ function createDetailsOverviewElement(item) {
   const genreListElement = document.createElement('p');
   genreListElement.textContent = genres.join(', ');
 
+  const castHeaderElement = document.createElement('h2');
+  castHeaderElement.textContent = 'Cast';
+  const castListElement = document.createElement('p');
+  castListElement.textContent = cast.map((c) => c.name).join(', ');
+
   const imdbImgElement = document.createElement('img');
   imdbImgElement.className = 'detail-imdb';
   imdbImgElement.src = './img/imdb.svg';
@@ -47,6 +52,8 @@ function createDetailsOverviewElement(item) {
   fragment.appendChild(subHeaderElement);
   fragment.appendChild(descriptionElement);
   fragment.appendChild(genreListElement);
+  fragment.appendChild(castHeaderElement);
+  fragment.appendChild(castListElement);
   fragment.appendChild(imdbImgElement);
 
   return fragment;
@@ -85,9 +92,7 @@ function createListItemElement(item, action, actionFn) {
   showName.textContent = name;
 
   const showRelease = document.createElement('div');
-  showRelease.textContent = releaseDate
-    ? dayjs(releaseDate).format('YYYY')
-    : status;
+  showRelease.textContent = releaseDate ? dayjs(releaseDate).format('YYYY') : status;
 
   infoElement.appendChild(showName);
   infoElement.appendChild(showRelease);
@@ -161,7 +166,7 @@ function createRecentUpcomingElement(item) {
       : ''; // No episode info for movies
 
   const releaseDateDelta = document.createElement('div');
-  releaseDateDelta.className = 'item-info-secondary'
+  releaseDateDelta.className = 'item-info-secondary';
   releaseDateDelta.textContent = dayjs.duration(dayjs(item.releaseDate).diff(dayjs())).humanize(true);
 
   infoElement.appendChild(nameElement);

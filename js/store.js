@@ -1,12 +1,15 @@
 class Store {
   constructor() {
     if (!localStorage.getItem('watcher')) {
-      localStorage.setItem('watcher', JSON.stringify({
-        tmdbApiKey: undefined,
-        shows: [],
-        movies: [],
-        f1: [],
-      }))
+      localStorage.setItem(
+        'watcher',
+        JSON.stringify({
+          tmdbApiKey: undefined,
+          shows: [],
+          movies: [],
+          f1: [],
+        })
+      );
     }
   }
 
@@ -30,10 +33,13 @@ class Store {
 
   saveTmdbApiKey(apiKey) {
     if (apiKey) {
-      localStorage.setItem('watcher', JSON.stringify({
-        ...this.#getStore(),
-        tmdbApiKey: apiKey,
-      }));
+      localStorage.setItem(
+        'watcher',
+        JSON.stringify({
+          ...this.#getStore(),
+          tmdbApiKey: apiKey,
+        })
+      );
     }
   }
 
@@ -44,25 +50,34 @@ class Store {
   saveShow(show) {
     if (this.getShows().find((s) => s.id === show.id)) {
       // Replace existing show
-      localStorage.setItem('watcher', JSON.stringify({
-        ...this.#getStore(),
-        shows: [...this.getShows().filter((s) => s.id !== show.id), show],
-      }));
+      localStorage.setItem(
+        'watcher',
+        JSON.stringify({
+          ...this.#getStore(),
+          shows: [...this.getShows().filter((s) => s.id !== show.id), show],
+        })
+      );
     } else {
       // Add new show
-      localStorage.setItem('watcher', JSON.stringify({
-        ...this.#getStore(),
-        shows: [...this.getShows(), show],
-      }));
+      localStorage.setItem(
+        'watcher',
+        JSON.stringify({
+          ...this.#getStore(),
+          shows: [...this.getShows(), show],
+        })
+      );
     }
   }
 
   removeShow(showId) {
     if (this.getShows().find((s) => s.id === showId)) {
-      localStorage.setItem('watcher', JSON.stringify({
-        ...this.#getStore(),
-        shows: this.getShows().filter((s) => s.id !== showId),
-      }));
+      localStorage.setItem(
+        'watcher',
+        JSON.stringify({
+          ...this.#getStore(),
+          shows: this.getShows().filter((s) => s.id !== showId),
+        })
+      );
     }
   }
 
@@ -71,20 +86,36 @@ class Store {
   }
 
   saveMovie(movie) {
-    if (!this.getMovies().find((m) => m.id === movie.id)) {
-      localStorage.setItem('watcher', JSON.stringify({
-        ...this.#getStore(),
-        movies: [...this.getMovies(), movie],
-      }));
+    if (this.getMovies().find((m) => m.id === movie.id)) {
+      // Replace existing movie
+      localStorage.setItem(
+        'watcher',
+        JSON.stringify({
+          ...this.#getStore(),
+          movies: [...this.getMovies().filter((m) => m.id !== movie.id), movie],
+        })
+      );
+    } else {
+      // Add new movie
+      localStorage.setItem(
+        'watcher',
+        JSON.stringify({
+          ...this.#getStore(),
+          movies: [...this.getMovies(), movie],
+        })
+      );
     }
   }
 
   removeMovie(movieId) {
     if (this.getMovies().find((m) => m.id === movieId)) {
-      localStorage.setItem('watcher', JSON.stringify({
-        ...this.#getStore(),
-        movies: this.getMovies().filter((m) => m.id !== movieId),
-      }));
+      localStorage.setItem(
+        'watcher',
+        JSON.stringify({
+          ...this.#getStore(),
+          movies: this.getMovies().filter((m) => m.id !== movieId),
+        })
+      );
     }
   }
 
@@ -93,21 +124,30 @@ class Store {
   }
 
   saveF1(f1Schedule) {
-    localStorage.setItem('watcher', JSON.stringify({
-      ...this.#getStore(),
-      f1: f1Schedule.races.map((r) => new ResultItem({
-        id: r.round,
-        image: './img/f1.svg',
-        name: `${r.name}, ${r.location}`,
-        releaseDate: new Date(r.sessions.gp),
-      })),
-    }));
+    localStorage.setItem(
+      'watcher',
+      JSON.stringify({
+        ...this.#getStore(),
+        f1: f1Schedule.races.map(
+          (r) =>
+            new ResultItem({
+              id: r.round,
+              image: './img/f1.svg',
+              name: `${r.name}, ${r.location}`,
+              releaseDate: new Date(r.sessions.gp),
+            })
+        ),
+      })
+    );
   }
 
   removeF1() {
-    localStorage.setItem('watcher', JSON.stringify({
-      ...this.#getStore(),
-      f1: [],
-    }));
+    localStorage.setItem(
+      'watcher',
+      JSON.stringify({
+        ...this.#getStore(),
+        f1: [],
+      })
+    );
   }
 }
