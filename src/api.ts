@@ -53,9 +53,15 @@ export class Api {
   }
 
   async fetchShows(ids: number[]): Promise<Item[]> {
-    return await Promise.all(
+    return (await Promise.all(
       ids.map(async (id) => {
         const show = await this.#tmdbApi.tvSeriesDetails({ series_id: id });
+
+        // deno-lint-ignore no-explicit-any
+        if ((show as any).success === false) {
+          return undefined;
+        }
+
         const episodes: Item[] = (await Promise.all(
           show.seasons
             .filter((s) =>
@@ -88,7 +94,7 @@ export class Api {
           episodes,
         };
       }),
-    );
+    )).filter((show) => show !== undefined);
   }
 
   async fetchShowDetails(id: number): Promise<ShowDetailsRes> {
@@ -125,9 +131,15 @@ export class Api {
   }
 
   async fetchMovies(ids: number[]): Promise<Item[]> {
-    return await Promise.all(
+    return (await Promise.all(
       ids.map(async (id) => {
         const movie = await this.#tmdbApi.movieDetails({ movie_id: id });
+
+        // deno-lint-ignore no-explicit-any
+        if ((movie as any).success === false) {
+          return undefined;
+        }
+
         return {
           id: movie.id,
           name: movie.title ?? movie.original_title,
@@ -136,7 +148,7 @@ export class Api {
           status: movie.status,
         };
       }),
-    );
+    )).filter((movie) => movie !== undefined);
   }
 
   async fetchMovieDetails(id: number): Promise<MovieDetailsRes> {
