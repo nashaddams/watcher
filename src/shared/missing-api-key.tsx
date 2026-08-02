@@ -4,16 +4,16 @@ import { linkCss } from "../global.tsx";
 
 const Link = styled(BaseLink)`
   ${linkCss};
+  justify-self: right;
 `;
 
 const Wrapper = styled.div`
   position: fixed;
-  top: 24px;
+  top: 8px;
   right: 24px;
-  left: 24px;
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
+  grid-template-rows: auto auto;
+  gap: 4px;
   background-color: #d32f2f;
   padding: 11px 12px 12px 12px;
   border-radius: 6px;
@@ -26,7 +26,7 @@ export function MissingApiKey(
     return (
       <Wrapper>
         <div>Missing TMDB API Key.</div>
-        <Link to="/settings">Settings</Link>
+        <Link to="/settings">→ Go to settings.</Link>
       </Wrapper>
     );
   }
@@ -34,7 +34,7 @@ export function MissingApiKey(
     return (
       <Wrapper>
         <div>Invalid TMDB API Key.</div>
-        <Link to="/settings">Go to Settings</Link>
+        <Link to="/settings">→ Go to Settings.</Link>
       </Wrapper>
     );
   }

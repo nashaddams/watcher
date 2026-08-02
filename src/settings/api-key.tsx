@@ -56,15 +56,10 @@ export function ApiKey({ addApiKey }: Props) {
           type="password"
           name="api-key-input"
           value={apiKeyInput}
-          onChange={(e) => setApiKeyInput(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setApiKeyInput(e.target.value)}
         />
-        <Form.SaveButton
-          onClick={() => {
-            if (apiKeyInput !== "") {
-              addApiKey(apiKeyInput);
-            }
-          }}
-        />
+        <Form.SaveButton onClick={() => addApiKey(apiKeyInput)} />
       </Form.Wrapper>
     </>
   );

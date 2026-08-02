@@ -76,7 +76,8 @@ export function Search(
           autoComplete="off"
           style={{ padding: "6px 36px 6px 32px" }}
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setQuery(e.target.value)}
         />
         <Icon.Search />
         {query !== "" && (

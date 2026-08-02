@@ -4,17 +4,13 @@ import { Color } from "../global.tsx";
 import { H2 } from "../shared/elements.tsx";
 import { Form } from "./form.tsx";
 
-const Wrapper = styled.div`
-  margin-top: 12px;
+const Code = styled.code`
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9rem;
   background-color: ${Color.BgSecondary};
   padding: 12px;
   border-radius: 6px;
   word-break: break-all;
-`;
-
-const Code = styled.code`
-  font-family: "Courier New", Courier, monospace;
-  font-size: 0.9rem;
 `;
 
 const RestoreDescription = styled.div`
@@ -41,11 +37,14 @@ export function BackupRestore(
     <>
       <H2>Backup & Restore</H2>
       <div>1. Copy and store the following text:</div>
-      <Wrapper>
+      <Form.Wrapper>
         <Code>
           {backupObj}
         </Code>
-      </Wrapper>
+        <Form.CopyButton
+          onClick={() => navigator.clipboard.writeText(backupObj)}
+        />
+      </Form.Wrapper>
 
       <RestoreDescription>
         2. Paste and save the previously exported text:
@@ -55,7 +54,8 @@ export function BackupRestore(
           type="text"
           name="restore-input"
           value={restoreInput}
-          onChange={(e) => setRestoreInput(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setRestoreInput(e.target.value)}
         />
         <Form.SaveButton
           onClick={() => {
