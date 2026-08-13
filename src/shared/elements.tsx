@@ -29,3 +29,24 @@ export const Input = styled.input`
   background-color: ${Color.BgSecondary};
   font-size: 1rem;
 `;
+
+export const Button = styled.button.attrs({ type: "button" })<
+  { primary?: boolean }
+>`
+  background: ${(props) => props.primary ? Color.Accent : Color.Bg};
+  color: ${(props) => props.primary ? "black" : "white"};
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 10px 0 0;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  outline: 0;
+  cursor: pointer;
+
+  &:last-child {
+    margin-right: 0;
+  }
+`;

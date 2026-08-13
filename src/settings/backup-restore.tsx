@@ -43,6 +43,7 @@ export function BackupRestore(
         </Code>
         <Form.CopyButton
           onClick={() => navigator.clipboard.writeText(backupObj)}
+          style={{ alignSelf: "start" }}
         />
       </Form.Wrapper>
 
