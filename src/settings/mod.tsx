@@ -6,6 +6,7 @@ import { Path, type PathType } from "../shared/path.ts";
 import { ApiKey } from "./api-key.tsx";
 import { BackupRestore } from "./backup-restore.tsx";
 import { F1 } from "./f1.tsx";
+import { Source } from "./source.tsx";
 
 const Section = styled.div`
   margin-bottom: 24px;
@@ -87,6 +88,10 @@ export function Settings(
           <option value={Path.Upcoming}>Upcoming</option>
           <option value={Path.Trending}>Trending</option>
         </Select>
+      </Section>
+
+      <Section>
+        <Source />
       </Section>
     </>
   );
