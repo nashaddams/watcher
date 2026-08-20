@@ -18,6 +18,31 @@ const Button = styled.div`
   cursor: pointer;
 `;
 
+const Select = styled.select`
+  outline: none;
+  border: none;
+  width: 100%;
+  border-radius: 6px;
+  border-right: 8px solid transparent;
+  padding: 12px 14px;
+  color: white;
+  background-color: ${Color.BgSecondary};
+  font-size: 1rem;
+  cursor: pointer;
+  width: 210px;
+  /* Light arrow color */
+  color-scheme: dark;
+`;
+
+const CheckBoxInput = styled.input.attrs({ type: "checkbox" })`
+  margin: 0 8px 0 0;
+  cursor: pointer;
+`;
+
+const CheckBoxLabel = styled.label`
+  cursor: pointer;
+`;
+
 const Svg = styled.svg`
   height: 20px;
   width: auto;
@@ -27,6 +52,7 @@ const Svg = styled.svg`
 export const Form = {
   Wrapper,
   Input,
+  Select,
   SaveButton: (props: HTMLAttributes<HTMLDivElement>) => (
     <Button {...props}>
       <Svg
@@ -50,4 +76,32 @@ export const Form = {
       </Svg>
     </Button>
   ),
+  Checks: (
+    { items, onChange }: {
+      items: { value: string; label: string; checked: boolean }[];
+      onChange: (
+        { value, label, checked }: {
+          value: string;
+          label: string;
+          checked: boolean;
+        },
+      ) => void;
+    },
+  ) =>
+    items.map(({ value, checked, label }) => {
+      const collectionId = Math.random().toString(36).slice(2);
+      return (
+        <div style={{ marginBottom: "8px" }}>
+          <CheckBoxInput
+            id={value}
+            name={collectionId}
+            value={value}
+            checked={checked}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onChange({ value, label, checked: e.target.checked })}
+          />
+          <CheckBoxLabel htmlFor={value}>{label}</CheckBoxLabel>
+        </div>
+      );
+    }),
 };

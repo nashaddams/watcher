@@ -1,10 +1,11 @@
 import type * as React from "react";
+import { useEffect } from "react";
 import { styled } from "styled-components";
-import { Color } from "../global.tsx";
 import { H1, H2 } from "../shared/elements.tsx";
-import { Path, type PathType } from "../shared/path.ts";
+import { type NavRoute, type OptionalRoute, Route } from "../routes.ts";
 import { ApiKey } from "./api-key.tsx";
 import { BackupRestore } from "./backup-restore.tsx";
+import { Form } from "./form.tsx";
 import { F1 } from "./f1.tsx";
 import { Source } from "./source.tsx";
 
@@ -16,22 +17,6 @@ const Section = styled.div`
   }
 `;
 
-const Select = styled.select`
-  outline: none;
-  border: none;
-  width: 100%;
-  border-radius: 6px;
-  border-right: 8px solid transparent;
-  padding: 12px 14px;
-  color: white;
-  background-color: ${Color.BgSecondary};
-  font-size: 1rem;
-  cursor: pointer;
-  width: 210px;
-  /* Light arrow color */
-  color-scheme: dark;
-`;
-
 type Props = {
   addApiKey: (apiKey: string) => void;
   showIds: number[];
@@ -39,8 +24,10 @@ type Props = {
   restoreShowsAndMovies: (args: { shows: number[]; movies: number[] }) => void;
   f1Active: boolean;
   activateF1: (active: boolean) => void;
-  defaultHome: PathType;
-  setDefaultHome: (path: PathType) => void;
+  defaultHome: NavRoute;
+  setDefaultHome: (path: NavRoute) => void;
+  disabledPages: OptionalRoute[];
+  setDisabledPages: (pages: OptionalRoute[]) => void;
 };
 
 export function Settings(
@@ -53,11 +40,19 @@ export function Settings(
     activateF1,
     defaultHome,
     setDefaultHome,
+    disabledPages,
+    setDisabledPages,
   }: Props,
 ) {
+  useEffect(() => {
+    if (disabledPages.includes(defaultHome as OptionalRoute)) {
+      setDefaultHome(Route.Library.path);
+    }
+  }, [disabledPages]);
+
   return (
     <>
-      <H1>Settings</H1>
+      <H1>{Route.Settings.title}</H1>
 
       <Section>
         <ApiKey addApiKey={addApiKey} />
@@ -78,16 +73,55 @@ export function Settings(
       <Section>
         <H2>Default home</H2>
 
-        <Select
+        <Form.Select
           value={defaultHome}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setDefaultHome(e.target.value as PathType)}
+            setDefaultHome(e.target.value as NavRoute)}
         >
-          <option value={Path.Library}>Library</option>
-          <option value={Path.Recent}>Recent</option>
-          <option value={Path.Upcoming}>Upcoming</option>
-          <option value={Path.Trending}>Trending</option>
-        </Select>
+          <option value={Route.Library.path}>{Route.Library.title}</option>
+          {!disabledPages.includes(Route.Recent.path) && (
+            <option value={Route.Recent.path}>{Route.Recent.title}</option>
+          )}
+          {!disabledPages.includes(Route.Upcoming.path) && (
+            <option value={Route.Upcoming.path}>{Route.Upcoming.title}</option>
+          )}
+          {!disabledPages.includes(Route.Trending.path) && (
+            <option value={Route.Trending.path}>{Route.Trending.title}</option>
+          )}
+        </Form.Select>
+      </Section>
+
+      <Section>
+        <H2>Enabled pages</H2>
+
+        <Form.Checks
+          items={[
+            {
+              value: Route.Recent.path,
+              label: Route.Recent.title,
+              checked: !disabledPages.includes(Route.Recent.path),
+            },
+            {
+              value: Route.Upcoming.path,
+              label: Route.Upcoming.title,
+              checked: !disabledPages.includes(Route.Upcoming.path),
+            },
+            {
+              value: Route.Trending.path,
+              label: Route.Trending.title,
+              checked: !disabledPages.includes(Route.Trending.path),
+            },
+          ]}
+          onChange={(item) => {
+            if (item.checked === false) {
+              setDisabledPages([
+                ...new Set([...disabledPages, item.value as OptionalRoute]),
+              ]);
+            } else if (item.checked === true) {
+              setDisabledPages(disabledPages.filter((p) => p !== item.value));
+            }
+          }}
+        />
       </Section>
 
       <Section>

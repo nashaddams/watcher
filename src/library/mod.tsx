@@ -1,5 +1,6 @@
 import type { Item as ItemType } from "../types.ts";
 import { dayjs } from "../dayjs.ts";
+import { Route } from "../routes.ts";
 import { H1 } from "../shared/elements.tsx";
 import { Item } from "../shared/item.tsx";
 import { Search } from "./search.tsx";
@@ -33,7 +34,7 @@ export function Library(
 ) {
   return (
     <>
-      <H1>Library</H1>
+      <H1>{Route.Library.title}</H1>
 
       <Search
         apiKey={apiKey}
