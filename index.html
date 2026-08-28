@@ -113,7 +113,12 @@
         line-height: 1.2rem;
       }
 
-      main > .content > #search-container {
+      /* Show indicator for show detail overlay */
+      main > .content #show-list img {
+        cursor: pointer;
+      }
+
+      main > .content > .overlay {
         display: none;
         position: fixed;
         top: 0;
@@ -121,11 +126,11 @@
         bottom: 0;
         left: 0;
         padding: 80px 20px 20px 20px;
-        background-color: rgba(0, 0, 0, 0.9);
+        background-color: #0A1929; /* inherit body background */
         overflow-y: auto;
       }
 
-      main > .content > #search-container > #close-search {
+      main > .content > .overlay > .overlay-close {
         position: fixed;
         top: 20px;
         right: 20px;
@@ -135,6 +140,40 @@
         background: rgba(255, 255, 255, 0.1);
         padding: 5px;
         border-radius: 5px;
+      }
+
+      main > .content > .overlay h1 {
+        font-size: 2.4rem;
+        margin-bottom: 16px;
+      }
+
+      main > .content > .overlay h2 {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, .4);
+      }
+
+      main > .content > .overlay#detail-container img.detail-background {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        opacity: 0.2;
+
+        /* Make sure it's in the back */
+        z-index: -1;
+      }
+
+      main > .content > .overlay#detail-container > #detail-info > h1, h2, p {
+        margin-bottom: 20px;
+      }
+
+      main > .content > .overlay#detail-container img.detail-imdb {
+        width: 80px;
+        cursor: pointer;
       }
 
       main > .content > .backup-restore-actions {
@@ -197,9 +236,14 @@
           </div>
         </div>
 
-        <div id="search-container">
+        <div id="search-container" class="overlay">
           <div id="search-results"></div>
-          <img src="./img/close.svg" id="close-search" />
+          <img src="./img/close.svg" id="close-search" class="overlay-close" />
+        </div>
+
+        <div id="detail-container" class="overlay">
+          <div id="detail-info"></div>
+          <img src="./img/close.svg" id="close-detail" class="overlay-close" />
         </div>
       </div>
       <div id="content-recent" class="content"></div>
@@ -217,6 +261,7 @@
     <script src="./lib/dayjs-1.11.7/duration.js"></script>
     <script src="./lib/dayjs-1.11.7/relativeTime.js"></script>
     <script src="./lib/dayjs-1.11.7/advancedFormat.js"></script>
+    <script type="text/javascript" src="lib/DOMPurify-3.0.1/purify.min.js"></script>
 
     <script>
       dayjs.extend(window.dayjs_plugin_duration);
@@ -267,10 +312,61 @@
         }
       }
 
+      function showDetails(showId) {        
+        const fragment = document.createDocumentFragment();
+        const show = getShows().find((s) => s.id === showId);
+
+        if (show) {
+          const IMDB_BASE_URL = 'https://www.imdb.com/title/';
+
+          const {
+            externals: { imdb },
+            genres = [],
+            image: { medium = './img/placeholder.svg' },
+            name,
+            premiered,
+            status,
+            summary,
+          } = show;
+
+          const img = document.createElement('img');
+          img.className = 'detail-background';
+          img.src = medium;
+
+          const header = document.createElement('h1');
+          header.textContent = name;
+
+          const subHeader = document.createElement('h2');
+          subHeader.textContent = premiered ? dayjs(premiered).format('YYYY') : status;
+
+          const description = document.createElement('p');
+          description.innerHTML = DOMPurify.sanitize(summary);
+
+          const genreList = document.createElement('p');
+          genreList.textContent = genres.join(', ');
+
+          const imdbImg = document.createElement('img');
+          imdbImg.className = 'detail-imdb';
+          imdbImg.src = './img/imdb.svg';
+          imdbImg.addEventListener('click', () => open(`${IMDB_BASE_URL}${imdb}`, '_blank'));
+
+          fragment.appendChild(img);
+          fragment.appendChild(header);
+          fragment.appendChild(subHeader);
+          fragment.appendChild(description);
+          fragment.appendChild(genreList);
+          fragment.appendChild(imdbImg);
+
+          detailInfo.appendChild(fragment);
+          detailContainer.style.display = 'block';
+        }
+      }
+
       // action: add|remove
       function createShowElement(show, action) {
         const showImg = document.createElement('img');
         showImg.src = show.image ? show.image.medium : './img/placeholder.svg';
+        showImg.addEventListener('click', () => showDetails(show.id));
 
         const showInfo = document.createElement('div');
         showInfo.className = 'item-info';
@@ -280,7 +376,7 @@
 
         const showRelease = document.createElement('div');
         showRelease.textContent = show.premiered
-          ? show.premiered.slice(0, 4)
+          ? dayjs(show.premiered).format('YYYY')
           : show.status;
 
         showInfo.appendChild(showName);
@@ -454,6 +550,15 @@
           const shows = await fetchShows(searchInput);
           renderSearchResults(shows);
         }
+      });
+
+      // Initialize show detail overlay
+      const detailContainer = document.getElementById('detail-container');
+      const detailInfo = document.getElementById('detail-info');
+
+      document.getElementById('close-detail').addEventListener('click', () => {
+        detailContainer.style.display = 'none';
+        detailInfo.replaceChildren();
       });
 
       // Initialize backup/restore
