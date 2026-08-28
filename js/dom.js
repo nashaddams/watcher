@@ -6,6 +6,11 @@ function hideLoadingIndicator() {
   document.getElementById('load-container').style.display = 'none';
 }
 
+function handleImgLoadError(e) {
+  e.target.src = './img/placeholder.svg';
+  e.onerror = null;
+}
+
 /**
  * Create details overlay for saved shows and movies
  * @param {Object} item show or movie
@@ -18,6 +23,7 @@ function createDetailsOverviewElement(item) {
   const imgElement = document.createElement('img');
   imgElement.className = 'detail-background';
   imgElement.src = image;
+  imgElement.addEventListener('error', handleImgLoadError);
 
   const headerElement = document.createElement('h1');
   headerElement.textContent = name;
@@ -56,6 +62,7 @@ function createListItemElement(item, action, actionFn) {
 
   const imgElement = document.createElement('img');
   imgElement.src = image ? image : './img/placeholder.svg';
+  imgElement.addEventListener('error', handleImgLoadError);
 
   // Show details only for added items
   if (action === 'remove') {
@@ -139,6 +146,7 @@ function createRecentUpcomingElement(item) {
 
   const imgElement = document.createElement('img');
   imgElement.src = item.image;
+  imgElement.addEventListener('error', handleImgLoadError);
 
   const infoElement = document.createElement('div');
   infoElement.className = 'item-info';
