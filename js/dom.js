@@ -105,6 +105,7 @@ function createListItemElement(item, action, actionFn) {
  */
 function createListElement(items = [], headerText, { action, actionFn }) {
   const listElement = document.createElement('div');
+  listElement.className = 'list';
 
   if (items.length) {
     const listElementHeader = document.createElement('div');

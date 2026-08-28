@@ -23,9 +23,16 @@ main > .content {
   position: relative;
 }
 
-main > .content .media-type-header {
-  margin-bottom: 5px;
-  margin-top: 10px;
+main > .content .list {
+  margin-top: 20px;
+}
+
+main > .content .list:first-child {
+  margin-top: 0;
+}
+
+main > .content .list .media-type-header {
+  margin-bottom: 10px;
   color: rgba(255, 255, 255, .4);
   font-weight: 600;
 }
