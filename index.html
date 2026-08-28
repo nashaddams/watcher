@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 viewport-fit=cover">
     <title>Watcher</title>
     <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
@@ -154,6 +154,10 @@
       main > .content > .backup-restore-actions label {
         display: block;
         cursor: pointer;
+      }
+
+      footer {
+        padding-bottom: env(safe-area-inset-bottom);
       }
 
       footer > nav {
