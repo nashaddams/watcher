@@ -13,3 +13,4 @@ _Recommendation: Add `Watcher` to your home screen for a native app experience._
 
 - [TMDB](https://www.themoviedb.org/)
 - [sportstimes/f1](https://github.com/sportstimes/f1)
+- [Remix Icon](https://remixicon.com)
