@@ -328,8 +328,12 @@
           // Rehydrate show episodes when online
           const shows = store.getShows();
           for (const show of shows) {
+            try {
               const showWithDetails = await api.fetchShowDetails(show.id);
               store.saveShow(showWithDetails);
+            } catch(e) {
+              console.warn('[watcher] Unable to refresh show details.', e);
+            }
           }
         }
 
