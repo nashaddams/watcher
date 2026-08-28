@@ -44,7 +44,7 @@ const Toggle = styled.div<{ active: boolean }>`
 `;
 
 const PoweredBy = styled.div`
-  margin: 12px 0 64px 0;
+  margin: 12px 0 24px 0;
   font-size: 0.8rem;
 `;
 

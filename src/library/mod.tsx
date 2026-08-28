@@ -1,22 +1,9 @@
-import { Link } from "react-router-dom";
-import { styled } from "styled-components";
 import type { Item as ItemType } from "../types.ts";
 import { dayjs } from "../dayjs.ts";
 import { H1 } from "../shared/elements.tsx";
 import { Item } from "../shared/item.tsx";
 import { Search } from "./search.tsx";
 import { Icon } from "./icons.tsx";
-
-const Header = styled.div`
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 24px;
-
-  & > :last-child {
-    justify-self: end;
-    margin: 5px 6px 0 0;
-  }
-`;
 
 type Props = {
   apiKey: string;
@@ -45,12 +32,8 @@ export function Library(
 ) {
   return (
     <>
-      <Header>
-        <H1>Library</H1>
-        <Link to="/settings">
-          <Icon.Settings />
-        </Link>
-      </Header>
+      <H1>Library</H1>
+
       <Search
         apiKey={apiKey}
         showIds={showIds}

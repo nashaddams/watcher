@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { dayjs } from "./dayjs.ts";
 import { GlobalStyle, theme } from "./global.tsx";
@@ -12,6 +12,7 @@ import { Nav } from "./shared/nav.tsx";
 import { MissingApiKey } from "./shared/missing-api-key.tsx";
 import { ItemList } from "./shared/item-list.tsx";
 import { Loader } from "./shared/loader.tsx";
+import { Path, type PathType } from "./shared/path.ts";
 import { Library } from "./library/mod.tsx";
 import { Trending } from "./trending/mod.tsx";
 import { Settings } from "./settings/mod.tsx";
@@ -21,6 +22,10 @@ import { PersonDetails } from "./details/person.tsx";
 import { F1Details } from "./details/f1.tsx";
 
 function App() {
+  const [defaultHome, setDefaultHome] = useLocalStorage<PathType>(
+    "WATCHER_DEFAULT_HOME",
+    "/recent",
+  );
   const [apiKey, setApiKey] = useLocalStorage<string>(
     "WATCHER_TMDB_API_KEY_V1",
     "",
@@ -87,7 +92,18 @@ function App() {
         setLoading(false);
       }
     })();
-  }, [showIds.length, movieIds.length, apiKey, f1Active]);
+  }, [showIds.length, movieIds.length, apiKey]);
+
+  useEffect(() => {
+    (async () => {
+      const api = new Api(apiKey);
+
+      setLoading(true);
+      const f1 = f1Active ? await api.fetchF1() : [];
+      setF1(f1);
+      setLoading(false);
+    })();
+  }, [f1Active]);
 
   const items: Item[] = [
     ...shows.map((s) =>
@@ -117,12 +133,9 @@ function App() {
       <ThemeProvider theme={theme}>
         <Main>
           <Routes>
+            <Route index element={<Navigate to={defaultHome} replace />} />
             <Route
-              index
-              element={<ItemList title="Recent" items={recent} />}
-            />
-            <Route
-              path="/library"
+              path={Path.Library}
               element={
                 <Library
                   apiKey={apiKey}
@@ -138,11 +151,15 @@ function App() {
               }
             />
             <Route
-              path="/upcoming"
+              path={Path.Recent}
+              element={<ItemList title="Recent" items={recent} />}
+            />
+            <Route
+              path={Path.Upcoming}
               element={<ItemList title="Upcoming" items={upcoming} />}
             />
             <Route
-              path="/trending"
+              path={Path.Trending}
               element={
                 <Trending
                   apiKey={apiKey}
@@ -154,7 +171,7 @@ function App() {
               }
             />
             <Route
-              path="/settings"
+              path={Path.Settings}
               element={
                 <Settings
                   addApiKey={addApiKey}
@@ -163,6 +180,8 @@ function App() {
                   restoreShowsAndMovies={restoreShowsAndMovies}
                   f1Active={f1Active}
                   activateF1={activateF1}
+                  defaultHome={defaultHome}
+                  setDefaultHome={setDefaultHome}
                 />
               }
             />
