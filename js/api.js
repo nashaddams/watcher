@@ -1,67 +1,3 @@
-/**
- * Object for show and movie search result objects
- */
-class SearchResultItem {
-  constructor({
-    id = undefined,
-    image = './img/placeholder.svg',
-    name = undefined,
-    releaseDate = undefined,
-  }) {
-    this.id = id,
-    this.image = image;
-    this.name = name;
-    this.releaseDate = releaseDate;
-  }
-}
-
-/**
- * Object for saved show and movie objects
- */
-class SavedItem {
-  constructor({
-    id = undefined,
-    image = './img/placeholder.svg',
-    name = undefined,
-    releaseDate = undefined,
-    details = undefined,
-    status = undefined,
-    genres = [],
-    episodes = [],
-    imdbUrl = undefined,
-  }) {
-    this.id = id,
-    this.image = image;
-    this.name = name;
-    this.releaseDate = releaseDate;
-    this.details = details;
-    this.status = status;
-    this.genres = genres;
-    this.episodes = episodes;
-    this.imdbUrl = imdbUrl;
-  }
-}
-
-class RecentUpcomingItem {
-  constructor({
-    id = undefined,
-    image = './img/placeholder.svg',
-    name = undefined,
-    releaseDate = undefined,
-    episodeNumber = 0,
-    seasonNumber = 0,
-    showName = undefined,
-  }) {
-    this.id = id,
-    this.image = image;
-    this.name = name;
-    this.releaseDate = releaseDate;
-    this.episodeNumber = episodeNumber;
-    this.seasonNumber = seasonNumber;
-    this.showName = showName;
-  }
-}
-
 class Api {
   apiKey = undefined;
   baseUrl = 'https://api.themoviedb.org/3';
@@ -84,7 +20,7 @@ class Api {
     );
     const { results: shows } = await res.json();
 
-    return shows.map((s) => new SearchResultItem({
+    return shows.map((s) => new ResultItem({
       id: s.id,
       image: s.poster_path ? `${this.baseImgUrl}/${s.poster_path}` : './img/placeholder.svg', // or backdrop_path
       name: s.name, // or original_name
@@ -163,7 +99,7 @@ class Api {
     );
     const { results: movies } = await res.json();
 
-    return movies.map((m) => new SearchResultItem({
+    return movies.map((m) => new ResultItem({
       id: m.id,
       image: m.poster_path ? `${this.baseImgUrl}/${m.poster_path}` : './img/placeholder.svg', // or backdrop_path
       name: m.title, // or original_title

@@ -14,6 +14,16 @@ body {
   color: white;
 }
 
+a {
+  text-decoration: none;
+  color: #FFAB00;
+}
+
+code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+}
+
 main {
   overflow-y: auto;
 }
@@ -198,6 +208,10 @@ main > .content > .overlay#detail-container img.detail-imdb {
   cursor: pointer;
 }
 
+main > .content > .overlay#settings-container #settings-content *:last-child {
+  margin-bottom: 0;
+}
+
 main > .content > .overlay#settings-container .backup-restore-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -220,6 +234,36 @@ main > .content > .overlay#settings-container .backup-restore-actions input {
 }
 
 main > .content > .overlay#settings-container .backup-restore-actions label {
+  display: block;
+  cursor: pointer;
+}
+
+main > .content > .overlay#settings-container a > img.tmdb-logo {
+  height: 0.8rem;
+}
+
+main > .content > .overlay#settings-container .f1-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
+  margin-bottom: 20px;
+}
+
+main > .content > .overlay#settings-container .f1-actions > * {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+main > .content > .overlay#settings-container .f1-actions input {
+  display: none;
+}
+
+main > .content > .overlay#settings-container .f1-actions label {
   display: block;
   cursor: pointer;
 }
