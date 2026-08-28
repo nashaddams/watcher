@@ -1,0 +1,238 @@
+* {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: 100vh;
+  max-height: -webkit-fill-available;
+  background-color: #0A1929;
+  color: white;
+}
+
+main {
+  overflow-y: auto;
+}
+
+main > .content {
+  padding: 20px;
+  position: relative;
+}
+
+main > .content .media-type-header {
+  margin-bottom: 5px;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, .4);
+  font-weight: 600;
+}
+
+main > .content > .list-header {
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+main > .content .item {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+main > .content .item:last-child {
+  margin-bottom: 0;
+}
+
+main > .content .item > img {
+  width: 64px;
+  max-width: 64px;
+  border-radius: 5px;
+}
+
+main > .content .item > .item-info {
+  font-size: 0.9rem;
+}
+
+main > .content .item > .item-info > div:first-child {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+main > .content .item > .item-info > div.item-info-secondary {
+  margin-top: 5px;
+  color: rgba(255, 255, 255, .4);
+}
+
+main > .content .item > img.action {
+  height: 32px;
+  width: 32px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+main > .content form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-gap: 10px;
+  margin-bottom: 20px;
+}
+
+main > .content form > button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 7px 7px 0 7px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+}
+
+main > .content form > button > img {
+  height: 28px;
+  width: 28px;
+}
+
+main > .content form > input {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  min-width: 0;
+  line-height: 1.2rem;
+}
+
+/* Show indicator for show detail overlay */
+main > .content #show-list img {
+  cursor: pointer;
+}
+
+main > .content #missing-api-key {
+  display: none;
+  margin-top: 20px;
+  color: #FFAB00;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+main > .content #settings {
+  text-align: center;
+  margin-top: 20px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+}
+
+main > .content > .overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 80px 20px 20px 20px;
+  background-color: #0A1929; /* inherit body background */
+  overflow-y: auto;
+}
+
+main > .content > .overlay > .overlay-close {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  height: 42px;
+  width: 42px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  border-radius: 5px;
+}
+
+main > .content > .overlay h1 {
+  font-size: 2.4rem;
+  margin-bottom: 16px;
+}
+
+main > .content > .overlay h2 {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, .4);
+}
+
+main > .content > .overlay#detail-container img.detail-background {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  opacity: 0.2;
+
+  /* Make sure it's in the back */
+  z-index: -1;
+}
+
+main > .content > .overlay#detail-container > #detail-info > h1, h2, p {
+  margin-bottom: 20px;
+}
+
+main > .content > .overlay#detail-container img.detail-imdb {
+  width: 80px;
+  cursor: pointer;
+}
+
+main > .content > .overlay#settings-container .backup-restore-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
+  margin-bottom: 20px;
+}
+
+main > .content > .overlay#settings-container .backup-restore-actions > * {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+main > .content > .overlay#settings-container .backup-restore-actions input {
+  display: none;
+}
+
+main > .content > .overlay#settings-container .backup-restore-actions label {
+  display: block;
+  cursor: pointer;
+}
+
+footer {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+footer > nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-top: solid rgba(255, 255, 255, 0.1) 2px;
+}
+
+footer > nav > div {
+  text-align: center;
+  padding: 16px;
+  cursor: pointer;
+}
+
+footer > nav > div.selected {
+  font-weight: 600;
+}

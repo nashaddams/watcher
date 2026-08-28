@@ -8,231 +8,11 @@
     <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
     <link rel="manifest" href="img/favicon/site.webmanifest">
-    <style>
-      * {
-        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Helvetica, Arial, sans-serif;
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        display: grid;
-        grid-template-rows: 1fr auto;
-        height: 100vh;
-        max-height: -webkit-fill-available;
-        background-color: #0A1929;
-        color: white;
-      }
-
-      main {
-        overflow-y: auto;
-      }
-
-      main > .content {
-        padding: 20px;
-        position: relative;
-      }
-
-      main > .content > .list-header {
-        font-weight: 600;
-        margin-bottom: 5px;
-        font-size: 0.9rem;
-      }
-
-      main > .content .item {
-        display: grid;
-        grid-gap: 10px;
-        grid-template-columns: auto 1fr auto;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-
-      main > .content .item:last-child {
-        margin-bottom: 0;
-      }
-
-      main > .content .item > img {
-        height: 100px;
-        max-height: 100px;
-        border-radius: 5px;
-      }
-
-      main > .content .item > .item-info {
-        font-size: 0.9rem;
-      }
-
-      main > .content .item > .item-info > div:first-child {
-        font-weight: 600;
-        font-size: 1rem;
-        margin-bottom: 5px;
-      }
-
-      main > .content .item > .item-info > div.item-info-secondary {
-        margin-top: 5px;
-        color: rgba(255, 255, 255, .4);
-      }
-
-      main > .content .item > img.action {
-        height: 32px;
-        width: 32px;
-        cursor: pointer;
-        margin-right: 5px;
-      }
-
-      main > .content form {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        grid-gap: 10px;
-        margin-bottom: 20px;
-      }
-
-      main > .content form > button {
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        color: white;
-        cursor: pointer;
-        padding: 7px 7px 0 7px;
-        border-radius: 5px;
-        font-size: 1.2rem;
-      }
-
-      main > .content form > button > img {
-        height: 28px;
-        width: 28px;
-      }
-
-      main > .content form > input {
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 1.2rem;
-        min-width: 0;
-        line-height: 1.2rem;
-      }
-
-      /* Show indicator for show detail overlay */
-      main > .content #show-list img {
-        cursor: pointer;
-      }
-
-      main > .content #settings {
-        text-align: center;
-        margin-top: 20px;
-        cursor: pointer;
-        color: rgba(255, 255, 255, 0.4);
-      }
-
-      main > .content > .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        padding: 80px 20px 20px 20px;
-        background-color: #0A1929; /* inherit body background */
-        overflow-y: auto;
-      }
-
-      main > .content > .overlay > .overlay-close {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        height: 42px;
-        width: 42px;
-        cursor: pointer;
-        background: rgba(255, 255, 255, 0.1);
-        padding: 5px;
-        border-radius: 5px;
-      }
-
-      main > .content > .overlay h1 {
-        font-size: 2.4rem;
-        margin-bottom: 16px;
-      }
-
-      main > .content > .overlay h2 {
-        font-size: 1.2rem;
-        color: rgba(255, 255, 255, .4);
-      }
-
-      main > .content > .overlay#detail-container img.detail-background {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-        opacity: 0.2;
-
-        /* Make sure it's in the back */
-        z-index: -1;
-      }
-
-      main > .content > .overlay#detail-container > #detail-info > h1, h2, p {
-        margin-bottom: 20px;
-      }
-
-      main > .content > .overlay#detail-container img.detail-imdb {
-        width: 80px;
-        cursor: pointer;
-      }
-
-      main > .content > .overlay#settings-container .backup-restore-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-gap: 20px;
-        margin-bottom: 20px;
-      }
-
-      main > .content > .overlay#settings-container .backup-restore-actions > * {
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        color: white;
-        cursor: pointer;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-      }
-
-      main > .content > .overlay#settings-container .backup-restore-actions input {
-        display: none;
-      }
-
-      main > .content > .overlay#settings-container .backup-restore-actions label {
-        display: block;
-        cursor: pointer;
-      }
-
-      footer {
-        padding-bottom: env(safe-area-inset-bottom);
-      }
-
-      footer > nav {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        border-top: solid rgba(255, 255, 255, 0.1) 2px;
-      }
-
-      footer > nav > div {
-        text-align: center;
-        padding: 16px;
-        cursor: pointer;
-      }
-
-      footer > nav > div.selected {
-        font-weight: 600;
-      }
-    </style>
+    <link rel="stylesheet" href="css/watcher.css">
   </head>
   <body>
     <main>
-      <div id="content-shows" class="content">
+      <div id="content-collection" class="content">
         <form id="search-form">
           <input type="text" name="search-input" id="search-input" />
           <button type="submit">
@@ -241,6 +21,10 @@
         </form>
 
         <div id="show-list"></div>
+
+        <div id="missing-api-key">
+          Missing TMDB API key.<br>Add it in the settings below.
+        </div>
 
         <div id="settings">Settings</div>
 
@@ -265,6 +49,17 @@
                 <input type="file" id="restore" />
               </div>
             </div>
+            <h2>TMDB API Key</h2>
+            <form id="tmdb-form">
+              <input type="password" name="tmdb-input" id="tmdb-input" />
+              <button type="submit">
+                <img src="./img/save.svg" />
+              </button>
+            </form>
+            <p>Add a TMDB API key to add shows and movies.</p>
+            <a href="https://www.themoviedb.org/" target="_blank">
+              <img src="./img/tmdb.svg" />
+            </a>
           </div>
           <img src="./img/close.svg" id="close-settings" class="overlay-close" />
         </div>
@@ -274,188 +69,77 @@
     </main>
     <footer>
       <nav>
-        <div id="tab-shows">Shows</div>
+        <div id="tab-collection">Collection</div>
         <div id="tab-recent">Recent</div>
         <div id="tab-upcoming">Upcoming</div>
       </nav>
     </footer>
 
-    <script src="./lib/dayjs-1.11.7/dayjs.min.js"></script>
-    <script src="./lib/dayjs-1.11.7/duration.js"></script>
-    <script src="./lib/dayjs-1.11.7/relativeTime.js"></script>
-    <script src="./lib/dayjs-1.11.7/advancedFormat.js"></script>
-    <script type="text/javascript" src="lib/DOMPurify-3.0.1/purify.min.js"></script>
+    <script src="./js/lib/dayjs-1.11.7/dayjs.min.js"></script>
+    <script src="./js/lib/dayjs-1.11.7/duration.js"></script>
+    <script src="./js/lib/dayjs-1.11.7/relativeTime.js"></script>
+    <script src="./js/lib/dayjs-1.11.7/advancedFormat.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/store.js"></script>
+    <script src="./js/dom.js"></script>
 
     <script>
       dayjs.extend(window.dayjs_plugin_duration);
       dayjs.extend(window.dayjs_plugin_relativeTime);
       dayjs.extend(window.dayjs_plugin_advancedFormat);
 
-      // content: shows|recent|upcoming
-      function navigateTo(content) {
-        localStorage.setItem('activeTab', content);
+      const store = new Store();
+      const api = new Api(store.getTmdbApiKey());
 
-        const links = document.querySelector('nav').children;
-        Array.from(links).filter((c) => c.id.includes(content)).map((c) => c.classList.add('selected'));
-        Array.from(links).filter((c) => !c.id.includes(content)).map((c) => c.classList.remove('selected'));
-        
-        const contents = document.querySelector('main').children;
-        Array.from(contents).filter((c) => c.id.includes(content)).map((c) => c.style.display = 'block');
-        Array.from(contents).filter((c) => !c.id.includes(content)).map((c) => c.style.display = 'none');
-      }
-
-      // Init storage
-      if (!localStorage.getItem('shows')) {
-        localStorage.setItem('shows', JSON.stringify([]));
-      }
-      
-      function getShows() {
-        return JSON.parse(localStorage.getItem('shows'));
-      }
-
-      async function saveShow(show) {
-        if (!getShows().find((s) => s.id === show.id)) {
-          const res = await fetch(`https://api.tvmaze.com/shows/${show.id}/episodes`);
-          const episodes = await res.json();
-          localStorage.setItem('shows', JSON.stringify([...getShows(), { ...show, episodes }]));
+      /**
+       * Initialize API UI on change
+       */
+      function initializeApiUi(tmdbApiKey) {
+        if (tmdbApiKey) {
+          document.getElementById('missing-api-key').style.display = 'none';
+          document.getElementById('tmdb-input').value = store.getTmdbApiKey();
+        } else {
+          document.getElementById('missing-api-key').style.display = 'block';
         }
       }
 
-      function removeShow(showId) {
-        if (getShows().find((s) => s.id === showId)) {
-          localStorage.setItem('shows', JSON.stringify(getShows().filter((s) => s.id !== showId)));
-        }
-      }
-
-      async function fetchShows(searchText) {
-        if (searchText) {
-          const res = await fetch(`https://api.tvmaze.com/search/shows?q=${searchText}`);
-          const json = await res.json();
-          return json.map((j) => j.show);
-        }
-      }
-
-      function showDetails(showId) {        
-        const fragment = document.createDocumentFragment();
-        const show = getShows().find((s) => s.id === showId);
-
-        if (show) {
-          const IMDB_BASE_URL = 'https://www.imdb.com/title/';
-
-          const {
-            externals: { imdb },
-            genres = [],
-            image: { medium = './img/placeholder.svg' },
-            name,
-            premiered,
-            status,
-            summary,
-          } = show;
-
-          const img = document.createElement('img');
-          img.className = 'detail-background';
-          img.src = medium;
-
-          const header = document.createElement('h1');
-          header.textContent = name;
-
-          const subHeader = document.createElement('h2');
-          subHeader.textContent = premiered ? dayjs(premiered).format('YYYY') : status;
-
-          const description = document.createElement('p');
-          description.innerHTML = DOMPurify.sanitize(summary);
-
-          const genreList = document.createElement('p');
-          genreList.textContent = genres.join(', ');
-
-          const imdbImg = document.createElement('img');
-          imdbImg.className = 'detail-imdb';
-          imdbImg.src = './img/imdb.svg';
-          imdbImg.addEventListener('click', () => open(`${IMDB_BASE_URL}${imdb}`, '_blank'));
-
-          fragment.appendChild(img);
-          fragment.appendChild(header);
-          fragment.appendChild(subHeader);
-          fragment.appendChild(description);
-          fragment.appendChild(genreList);
-          fragment.appendChild(imdbImg);
-
-          detailInfo.appendChild(fragment);
-          detailContainer.style.display = 'block';
-        }
-      }
-
-      // action: add|remove
-      function createShowElement(show, action) {
-        const showImg = document.createElement('img');
-        showImg.src = show.image ? show.image.medium : './img/placeholder.svg';
-        showImg.addEventListener('click', () => showDetails(show.id));
-
-        const showInfo = document.createElement('div');
-        showInfo.className = 'item-info';
-        
-        const showName = document.createElement('div');
-        showName.textContent = show.name;
-
-        const showRelease = document.createElement('div');
-        showRelease.textContent = show.premiered
-          ? dayjs(show.premiered).format('YYYY')
-          : show.status;
-
-        showInfo.appendChild(showName);
-        showInfo.appendChild(showRelease);
-
-        let actionElement = document.createElement('img');
-        actionElement.className = 'action';
-
-        if (action === 'add') {
-          actionElement.src = './img/add.svg';
-          actionElement.addEventListener('click', async () => {
-            await saveShow(show);
-            renderShows();
-            renderEpisodes();
-            document.getElementById('close-search').click();
-          })
-        } else if (action === 'remove') {
-          actionElement.src = './img/remove.svg';
-          actionElement.addEventListener('click', () => {
-            removeShow(show.id);
-            renderShows();
-            renderEpisodes();
-          })
-        }
-
-        const showItem = document.createElement('div');
-        showItem.className = 'item';
-        showItem.appendChild(showImg);
-        showItem.appendChild(showInfo);
-        showItem.appendChild(actionElement);
-
-        return showItem;
-      }
-
-      function renderSearchResults(shows = []) {
-        const fragment = document.createDocumentFragment();
-        for (const show of shows) {
-          fragment.appendChild(createShowElement(show, 'add'));
-        }
-        searchResults.appendChild(fragment);
-        searchContainer.style.display = 'block';
-      }
-
-      function renderShows() {
+      /**
+       * Render saved items
+       */
+      function renderSavedItems() {
         const showList = document.getElementById('show-list');
         showList.replaceChildren();
-        
-        const fragment = document.createDocumentFragment();
-        const shows = getShows().sort((s1, s2) => s1.name.localeCompare(s2.name));
-        for (const show of shows) {
-          fragment.appendChild(createShowElement(show, 'remove'));
-        }
-        showList.appendChild(fragment);
+
+        const shows = store.getShows();
+        const movies = store.getMovies();
+
+        const showListElement = createListElement(shows, 'Shows', {
+          action: 'remove',
+          actionFn: (showId) => {
+            store.removeShow(showId);
+            renderSavedItems();
+            renderRecentUpcoming();
+          }
+        });
+
+        const movieListElement = createListElement(movies, 'Movies', {
+          action: 'remove',
+          actionFn: (movieId) => {
+            store.removeMovie(movieId);
+            renderSavedItems();
+            renderRecentUpcoming();
+          }
+        });
+
+        showList.appendChild(showListElement);
+        showList.appendChild(movieListElement);
       }
 
-      function renderEpisodes(groupedEpisodes) {
+      /**
+       * Render recent and upcoming episodes and movies
+       */
+      function renderRecentUpcoming(groupedEpisodes) {
         ['recent', 'upcoming'].forEach((content) => {
           const contentTab = document.getElementById(`content-${content}`);
           contentTab.replaceChildren();
@@ -464,97 +148,56 @@
           const sevenDaysFromNow = dayjs(dayjs().format('YYYY-MM-DD')).add(1, 'week');
           const sevenDaysAgo = dayjs(dayjs().format('YYYY-MM-DD')).subtract(1, 'week')
 
-          Object.entries(getGroupedEpisodes(content)).forEach(([date, episodes]) => {
-            const airDate = dayjs(date);
-            const airDateString =
-              content === 'upcoming' && airDate < sevenDaysFromNow ||
-              content === 'recent' && airDate > sevenDaysAgo
-                ? airDate.format('dddd')
-                : airDate.format('dddd, MMMM Do');
+          // Show episodes and movies in recent/upcoming tabs
+          const recentUpcomingItems = [...store.getShows().flatMap((s) => s.episodes), ...store.getMovies()];
+
+          Object.entries(
+            getRecentUpcomingGroup(recentUpcomingItems, content)
+          ).forEach(([date, items]) => {
+            const releaseDate = dayjs(date);
+            const releaseDateString =
+              content === 'upcoming' && releaseDate < sevenDaysFromNow ||
+              content === 'recent' && releaseDate > sevenDaysAgo
+                ? releaseDate.format('dddd')
+                : releaseDate.format('dddd, MMMM Do');
 
             const dateElement = document.createElement('div');
             dateElement.className = 'list-header';
-            dateElement.textContent = airDateString;
+            dateElement.textContent = releaseDateString;
             fragment.appendChild(dateElement);
 
-            episodes.forEach((episode) => {
-              const episodeItem = document.createElement('div');
-              episodeItem.className = 'item';
-
-              const showImage = document.createElement('img');
-              showImage.src = episode.showImage;
-
-              const episodeInfo = document.createElement('div');
-              episodeInfo.className = 'item-info';
-
-              const showName = document.createElement('div');
-              showName.textContent = episode.showName;
-              const episodeNumber = document.createElement('div');
-              episodeNumber.textContent =
-                `${episode.episodeNumber}x${episode.episodeSeason.toString().padStart(2, '0')} ${episode.episodeName}`;
-              const airTimeDelta = document.createElement('div');
-              airTimeDelta.className = 'item-info-secondary'
-              airTimeDelta.textContent = dayjs.duration(dayjs(episode.airStamp).diff(dayjs())).humanize(true);
-
-              episodeInfo.appendChild(showName);
-              episodeInfo.appendChild(episodeNumber);
-              episodeInfo.appendChild(airTimeDelta);
-
-              episodeItem.appendChild(showImage);
-              episodeItem.appendChild(episodeInfo);
-
-              fragment.appendChild(episodeItem);
-            });
+            for (const item of items) {
+              fragment.appendChild(createRecentUpcomingElement(item));
+            }
           });
 
           contentTab.appendChild(fragment);
         });
       }
 
-      // content: recent|upcoming
-      function getGroupedEpisodes(content) {
-        return getShows().flatMap((s) => {
-          return s.episodes.map((e) => ({
-            showName: s.name,
-            showImage: s.image ? s.image.medium : './img/placeholder.svg',
-            airDate: e.airdate,
-            airStamp: e.airstamp,
-            episodeSeason: e.season,
-            episodeNumber: e.number,
-            episodeName: e.name,
-          }));
-        }).filter((e) => {
-          if (content === 'recent') {
-            return new Date(e.airDate) < new Date();
-          } else if (content === 'upcoming') {
-            return new Date(e.airDate) > new Date();
-          }
-          return false;
-        }).sort((e1, e2) => {
-          if (content === 'recent') {
-            return new Date(e2.airDate) - new Date(e1.airDate); 
-          }
-          return new Date(e1.airDate) - new Date(e2.airDate); 
-        }).reduce((group, episode) => {
-          const { airDate } = episode;
-          group[airDate] = group[airDate] ?? [];
-          group[airDate].push(episode);
-          return group;
-        }, {});
+      /**
+       * Navigation
+       * @param {string} content shows, recent, or upcoming
+       */
+      function navigateTo(content) {
+        localStorage.setItem('activeTab', content);
+
+        const links = document.querySelector('nav').children;
+        Array.from(links).filter((c) => c.id.includes(content)).map((c) => c.classList.add('selected'));
+        Array.from(links).filter((c) => !c.id.includes(content)).map((c) => c.classList.remove('selected'));
+
+        const contents = document.querySelector('main').children;
+        Array.from(contents).filter((c) => c.id.includes(content)).map((c) => c.style.display = 'block');
+        Array.from(contents).filter((c) => !c.id.includes(content)).map((c) => c.style.display = 'none');
       }
 
-      // Render contents
-      renderShows();
-      renderEpisodes();
-
-      // Initialize navigation
-      navigateTo(localStorage.getItem('activeTab') || 'recent')
-
-      document.getElementById('tab-shows').addEventListener('click', () => navigateTo('shows'));
+      document.getElementById('tab-collection').addEventListener('click', () => navigateTo('collection'));
       document.getElementById('tab-recent').addEventListener('click', () => navigateTo('recent'));
       document.getElementById('tab-upcoming').addEventListener('click', () => navigateTo('upcoming'));
 
-      // Initialize settings
+      /**
+       * Settings
+       */
       const settingsContainer = document.getElementById('settings-container');
 
       document.getElementById('settings').addEventListener('click', () => {
@@ -564,13 +207,35 @@
         settingsContainer.style.display = 'none';
       })
 
-      // Initialize search
-      const searchContainer = document.getElementById('search-container');
-      const searchResults = document.getElementById('search-results');
+      const tmdbForm = document.getElementById('tmdb-form')
+      tmdbForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const tmdbInput = formData.get('tmdb-input');
+        if (tmdbInput) {
+          document.getElementById('tmdb-input').blur();
 
+          // Re-initialize API key usages
+          store.saveTmdbApiKey(tmdbInput);
+          api.initializeApiKey(store.getTmdbApiKey());
+          initializeApiUi(store.getTmdbApiKey());
+        }
+      });
+
+      /**
+       * Details overlay
+       */
+      document.getElementById('close-detail').addEventListener('click', () => {
+        document.getElementById('detail-container').style.display = 'none';
+        document.getElementById('detail-info').replaceChildren();
+      });
+
+      /**
+       * Search
+       */
       document.getElementById('close-search').addEventListener('click', () => {
-        searchContainer.style.display = 'none';
-        searchResults.replaceChildren();
+        document.getElementById('search-container').style.display = 'none';
+        document.getElementById('search-results').replaceChildren();
       })
 
       const searchForm = document.getElementById('search-form')
@@ -580,23 +245,50 @@
         const searchInput = formData.get('search-input');
         if (searchInput) {
           document.getElementById('search-input').blur();
-          const shows = await fetchShows(searchInput);
-          renderSearchResults(shows);
+          const shows = await api.fetchShows(searchInput);
+          const movies = await api.fetchMovies(searchInput);
+          renderSearchResults(shows, movies);
         }
       });
 
-      // Initialize show detail overlay
-      const detailContainer = document.getElementById('detail-container');
-      const detailInfo = document.getElementById('detail-info');
+      function renderSearchResults(shows = [], movies = []) {
+        const searchContainer = document.getElementById('search-container');
+        const searchResults = document.getElementById('search-results');
+        searchResults.replaceChildren();
 
-      document.getElementById('close-detail').addEventListener('click', () => {
-        detailContainer.style.display = 'none';
-        detailInfo.replaceChildren();
-      });
+        const showListElement = createListElement(shows, 'Shows', {
+          action: 'add',
+          actionFn: async (showId) => {
+            const showWithDetails = await api.fetchShowDetails(showId);
+            store.saveShow(showWithDetails);
+            renderSavedItems();
+            renderRecentUpcoming();
+            document.getElementById('close-search').click();
+          }
+        });
 
-      // Initialize backup/restore
+        const movieListElement = createListElement(movies, 'Movies', {
+          action: 'add',
+          actionFn: async (movieId) => {
+            const movieWithDetails = await api.fetchMovieDetails(movieId);
+            store.saveMovie(movieWithDetails);
+            renderSavedItems();
+            renderRecentUpcoming();
+            document.getElementById('close-search').click();
+          }
+        });
+
+        searchResults.appendChild(showListElement);
+        searchResults.appendChild(movieListElement);
+        searchContainer.style.display = 'block';
+      }
+
+      /**
+       * Backup & Restore
+       */
       document.getElementById('backup').addEventListener('click', () => {
-        const data = `data:text/json;charset=utf-8,${encodeURIComponent(localStorage.getItem('shows'))}`;
+        const encodedBackupString = encodeURIComponent(JSON.stringify(store.createBackup()));
+        const data = `data:text/json;charset=utf-8,${encodedBackupString}`;
         const download = document.createElement('a');
         download.setAttribute('href',  data);
         download.setAttribute('download', `watcher-backup-${new Date().toISOString()}.json`);
@@ -614,16 +306,38 @@
             const reader = new FileReader();
             reader.readAsText(file, 'utf-8');
             reader.onload = function (e) {
-              const showsToRestore = JSON.parse(e.target.result);
-              showsToRestore.map(saveShow);
+              // Re-initialize API key usages
+              store.applyBackup(JSON.parse(e.target.result));
+              api.initializeApiKey(store.getTmdbApiKey());
+              initializeApiUi(store.getTmdbApiKey());
+
               setTimeout(() => {
-                renderShows();
-                renderEpisodes();
+                renderSavedItems();
+                renderRecentUpcoming();
               }, 1000);
             }
           }
         });
       });
+
+      /**
+       * Initialize application
+       */
+      (async () => {
+        if (window.navigator.onLine) {
+          // Rehydrate show episodes when online
+          const shows = store.getShows();
+          for (const show of shows) {
+              const showWithDetails = await api.fetchShowDetails(show.id);
+              store.saveShow(showWithDetails);
+          }
+        }
+
+        initializeApiUi(store.getTmdbApiKey());
+        navigateTo(localStorage.getItem('activeTab') || 'recent');
+        renderSavedItems();
+        renderRecentUpcoming();
+      })();
     </script>
   </body>
 </html>

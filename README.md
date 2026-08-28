@@ -1,12 +1,17 @@
 # Watcher
 
-This is a little web app to track recent and upcoming tv show episodes.
+This is a little web app to track recent and upcoming tv shows and movies.
+
+## Usage
+
+Enter a [TMDB API key](https://www.themoviedb.org/documentation/api) in the `Settings` to add shows and movies.
+
+*Recommendation: Add `Watcher` to your home screen for a native app experience.*
 
 ## Powered by
 
-* [TVmaze](https://www.tvmaze.com/api)
+* [TMDB](https://www.themoviedb.org/)
 * [Day.js](https://github.com/iamkun/dayjs)
-* [DOMPurify](https://github.com/cure53/DOMPurify)
 * [RedKetchup Favicon Generator](https://redketchup.io/favicon-generator)
 
 ## LICENSE
