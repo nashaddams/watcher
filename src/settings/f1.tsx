@@ -63,7 +63,7 @@ export function F1({ f1Active, activateF1 }: Props) {
       <PoweredBy>
         Powered by{" "}
         <A href="https://github.com/sportstimes/f1" target="_blank">
-          github.com/sportstimes/f1
+          sportstimes/f1
         </A>
       </PoweredBy>
     </>
