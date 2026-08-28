@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Item as ItemType } from "../types.ts";
 import { dayjs } from "../dayjs.ts";
 import { Api } from "../api.ts";
+import { Route } from "../routes.ts";
 import { H1 } from "../shared/elements.tsx";
 import { Item } from "../shared/item.tsx";
 import { Loader } from "../shared/loader.tsx";
@@ -39,7 +40,8 @@ export function Trending(
 
   return (
     <>
-      <H1>Trending</H1>
+      <H1>{Route.Trending.title}</H1>
+
       {shows.map((s) => (
         <Item
           id={s.id}

@@ -7,12 +7,16 @@ import { GlobalStyle, theme } from "./global.tsx";
 import { useLocalStorage } from "./hooks.ts";
 import { Api } from "./api.ts";
 import type { Item } from "./types.ts";
+import {
+  type NavRoute,
+  OptionalRoute,
+  Route as WatcherRoute,
+} from "./routes.ts";
 import { Main } from "./shared/elements.tsx";
 import { Nav } from "./shared/nav.tsx";
 import { MissingApiKey } from "./shared/missing-api-key.tsx";
 import { ItemList } from "./shared/item-list.tsx";
 import { Loader } from "./shared/loader.tsx";
-import { Path, type PathType } from "./shared/path.ts";
 import { Library } from "./library/mod.tsx";
 import { Trending } from "./trending/mod.tsx";
 import { Settings } from "./settings/mod.tsx";
@@ -22,9 +26,13 @@ import { PersonDetails } from "./details/person.tsx";
 import { F1Details } from "./details/f1.tsx";
 
 function App() {
-  const [defaultHome, setDefaultHome] = useLocalStorage<PathType>(
+  const [defaultHome, setDefaultHome] = useLocalStorage<NavRoute>(
     "WATCHER_DEFAULT_HOME",
-    "/recent",
+    WatcherRoute.Recent.path,
+  );
+  const [disabledPages, setDisabledPages] = useLocalStorage<OptionalRoute[]>(
+    "WATCHER_DISABLED_PAGES",
+    [],
   );
   const [apiKey, setApiKey] = useLocalStorage<string>(
     "WATCHER_TMDB_API_KEY_V1",
@@ -135,7 +143,7 @@ function App() {
           <Routes>
             <Route index element={<Navigate to={defaultHome} replace />} />
             <Route
-              path={Path.Library}
+              path={WatcherRoute.Library.path}
               element={
                 <Library
                   apiKey={apiKey}
@@ -151,15 +159,22 @@ function App() {
               }
             />
             <Route
-              path={Path.Recent}
-              element={<ItemList title="Recent" items={recent} />}
+              path={WatcherRoute.Recent.path}
+              element={
+                <ItemList title={WatcherRoute.Recent.title} items={recent} />
+              }
             />
             <Route
-              path={Path.Upcoming}
-              element={<ItemList title="Upcoming" items={upcoming} />}
+              path={WatcherRoute.Upcoming.path}
+              element={
+                <ItemList
+                  title={WatcherRoute.Upcoming.title}
+                  items={upcoming}
+                />
+              }
             />
             <Route
-              path={Path.Trending}
+              path={WatcherRoute.Trending.path}
               element={
                 <Trending
                   apiKey={apiKey}
@@ -171,7 +186,7 @@ function App() {
               }
             />
             <Route
-              path={Path.Settings}
+              path={WatcherRoute.Settings.path}
               element={
                 <Settings
                   addApiKey={addApiKey}
@@ -182,28 +197,30 @@ function App() {
                   activateF1={activateF1}
                   defaultHome={defaultHome}
                   setDefaultHome={setDefaultHome}
+                  disabledPages={disabledPages}
+                  setDisabledPages={setDisabledPages}
                 />
               }
             />
             <Route
-              path="/show/:id"
+              path={WatcherRoute.Show.path}
               element={<ShowDetails apiKey={apiKey} />}
             />
             <Route
-              path="/movie/:id"
+              path={WatcherRoute.Movie.path}
               element={<MovieDetails apiKey={apiKey} />}
             />
             <Route
-              path="/person/:id"
+              path={WatcherRoute.Person.path}
               element={<PersonDetails apiKey={apiKey} />}
             />
             <Route
-              path="/f1/:id"
+              path={WatcherRoute.F1.path}
               element={<F1Details apiKey={apiKey} />}
             />
           </Routes>
         </Main>
-        <Nav />
+        <Nav disabledPages={disabledPages} />
         <MissingApiKey missing={apiKey === ""} invalid={!validApiKey} />
         {loading ? <Loader /> : null}
         <GlobalStyle />

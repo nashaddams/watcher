@@ -1,6 +1,7 @@
 import { Link as BaseLink, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 import useDetectScroll from "@smakss/react-scroll-direction";
+import { type OptionalRoute, Route } from "../routes.ts";
 
 const Wrapper = styled.nav<{ hide: boolean }>`
   position: fixed;
@@ -8,11 +9,9 @@ const Wrapper = styled.nav<{ hide: boolean }>`
   left: 50%;
   transform: translateX(-50%);
 
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-gap: 20px;
+  display: inline-flex;
   gap: 20px;
-  justify-items: center;
+  justify-content: center;
 
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(3px);
@@ -82,31 +81,50 @@ const Icon = {
   ),
 };
 
-export function Nav() {
+type Props = {
+  disabledPages: OptionalRoute[];
+};
+
+export function Nav({ disabledPages }: Props) {
   const { pathname } = useLocation();
   const { scrollDir } = useDetectScroll({ thr: 100 });
 
   return (
     <Wrapper hide={scrollDir === "down"}>
-      <Link to="/library" selected={pathname === "/library"}>
+      <Link to={Route.Library.path} selected={pathname === Route.Library.path}>
         <Icon.Library />
-        <Text>Library</Text>
+        <Text>{Route.Library.title}</Text>
       </Link>
-      <Link to="/recent" selected={pathname === "/recent"}>
-        <Icon.Recent />
-        <Text>Recent</Text>
-      </Link>
-      <Link to="/upcoming" selected={pathname === "/upcoming"}>
-        <Icon.Upcoming />
-        <Text>Upcoming</Text>
-      </Link>
-      <Link to="/trending" selected={pathname === "/trending"}>
-        <Icon.Trending />
-        <Text>Trending</Text>
-      </Link>
-      <Link to="/settings" selected={pathname === "/settings"}>
+      {!disabledPages.includes(Route.Recent.path) && (
+        <Link to={Route.Recent.path} selected={pathname === Route.Recent.path}>
+          <Icon.Recent />
+          <Text>{Route.Recent.title}</Text>
+        </Link>
+      )}
+      {!disabledPages.includes(Route.Upcoming.path) && (
+        <Link
+          to={Route.Upcoming.path}
+          selected={pathname === Route.Upcoming.path}
+        >
+          <Icon.Upcoming />
+          <Text>{Route.Upcoming.title}</Text>
+        </Link>
+      )}
+      {!disabledPages.includes(Route.Trending.path) && (
+        <Link
+          to={Route.Trending.path}
+          selected={pathname === Route.Trending.path}
+        >
+          <Icon.Trending />
+          <Text>{Route.Trending.title}</Text>
+        </Link>
+      )}
+      <Link
+        to={Route.Settings.path}
+        selected={pathname === Route.Settings.path}
+      >
         <Icon.Settings />
-        <Text>Settings</Text>
+        <Text>{Route.Settings.title}</Text>
       </Link>
     </Wrapper>
   );

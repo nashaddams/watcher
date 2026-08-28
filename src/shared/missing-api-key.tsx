@@ -1,6 +1,7 @@
 import { styled } from "styled-components";
 import { Link as BaseLink } from "react-router-dom";
 import { linkCss } from "../global.tsx";
+import { Route } from "../routes.ts";
 
 const Link = styled(BaseLink)`
   ${linkCss};
@@ -26,7 +27,7 @@ export function MissingApiKey(
     return (
       <Wrapper>
         <div>Missing TMDB API Key.</div>
-        <Link to="/settings">→ Go to settings.</Link>
+        <Link to={Route.Settings.path}>→ Go to settings.</Link>
       </Wrapper>
     );
   }
@@ -34,7 +35,7 @@ export function MissingApiKey(
     return (
       <Wrapper>
         <div>Invalid TMDB API Key.</div>
-        <Link to="/settings">→ Go to Settings.</Link>
+        <Link to={Route.Settings.path}>→ Go to Settings.</Link>
       </Wrapper>
     );
   }
