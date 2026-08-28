@@ -6,7 +6,7 @@
     <title>Watcher</title>
     <style>
       * {
-        font-family: 'Courier New', Courier, monospace;
+        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Helvetica, Arial, sans-serif;
         box-sizing: border-box;
         margin: 0;
         padding: 0;
@@ -30,14 +30,13 @@
         position: relative;
       }
 
-
       main > .content > .list-header {
-        font-size: 0.8rem;
         font-weight: 600;
         margin-bottom: 5px;
+        font-size: 0.9rem;
       }
 
-      main > .content .show {
+      main > .content .item {
         display: grid;
         grid-gap: 10px;
         grid-template-columns: auto 1fr auto;
@@ -45,21 +44,31 @@
         margin-bottom: 20px;
       }
 
-      main > .content .show:last-child {
+      main > .content .item:last-child {
         margin-bottom: 0;
       }
 
-      main > .content .show > img {
+      main > .content .item > img {
         height: 100px;
         max-height: 100px;
-        border-radius: 7px;
+        border-radius: 5px;
       }
 
-      main > .content .show > img.action {
+      main > .content .item > .item-info {
+        font-size: 0.9rem;
+      }
+
+      main > .content .item > .item-info > div:first-child {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 5px;
+      }
+
+      main > .content .item > img.action {
         height: 32px;
         width: 32px;
         cursor: pointer;
-        margin-right: 4px;
+        margin-right: 5px;
       }
 
       main > .content > form {
@@ -74,7 +83,7 @@
         border: none;
         color: white;
         cursor: pointer;
-        padding: 5px 5px 0 5px;
+        padding: 7px 7px 0 7px;
         border-radius: 5px;
         font-size: 1.2rem;
       }
@@ -88,7 +97,7 @@
         background: rgba(255, 255, 255, 0.1);
         border: none;
         color: white;
-        padding: 5px 8px;
+        padding: 5px 10px;
         border-radius: 5px;
         font-size: 1.2rem;
         min-width: 0;
@@ -109,11 +118,14 @@
 
       main > .content > #search-container > #close-search {
         position: fixed;
-        top: 26px;
-        right: 26px;
-        height: 28px;
-        width: 28px;
+        top: 20px;
+        right: 20px;
+        height: 42px;
+        width: 42px;
         cursor: pointer;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 5px;
+        border-radius: 5px;
       }
 
       main > .content > .backup-restore-actions {
@@ -123,7 +135,7 @@
         text-align: center;
         margin-top: 20px;
         cursor: pointer;
-        color: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.4);
       }
 
       main > .content > .backup-restore-actions input {
@@ -156,7 +168,7 @@
     <main>
       <div id="content-shows" class="content">
         <form>
-          <input type="text" name="search-input" />
+          <input type="text" name="search-input" id="search-input" />
           <button type="submit">
             <img src="./img/search.svg" />
           </button>
@@ -239,6 +251,7 @@
         showImg.src = show.image ? show.image.medium : './img/placeholder.svg';
 
         const showInfo = document.createElement('div');
+        showInfo.className = 'item-info';
         
         const showName = document.createElement('div');
         showName.textContent = show.name;
@@ -252,7 +265,7 @@
         showInfo.appendChild(showRelease);
 
         let actionElement = document.createElement('img');
-        actionElement.className = 'action'
+        actionElement.className = 'action';
 
         if (action === 'add') {
           actionElement.src = './img/add.svg';
@@ -271,21 +284,21 @@
           })
         }
 
-        const showContainer = document.createElement('div');
-        showContainer.className = 'show';
-        showContainer.appendChild(showImg);
-        showContainer.appendChild(showInfo);
-        showContainer.appendChild(actionElement);
+        const showItem = document.createElement('div');
+        showItem.className = 'item';
+        showItem.appendChild(showImg);
+        showItem.appendChild(showInfo);
+        showItem.appendChild(actionElement);
 
-        return showContainer;
+        return showItem;
       }
 
       function renderSearchResults(shows = []) {
-        const documentFragment = document.createDocumentFragment();
+        const fragment = document.createDocumentFragment();
         for (const show of shows) {
-          documentFragment.appendChild(createShowElement(show, 'add'));
+          fragment.appendChild(createShowElement(show, 'add'));
         }
-        searchResults.appendChild(documentFragment);
+        searchResults.appendChild(fragment);
         searchContainer.style.display = 'block';
       }
 
@@ -293,55 +306,56 @@
         const showList = document.getElementById('show-list');
         showList.replaceChildren();
         
-        const documentFragment = document.createDocumentFragment();
+        const fragment = document.createDocumentFragment();
         const shows = getShows().sort((s1, s2) => s1.name.localeCompare(s2.name));
         for (const show of shows) {
-          documentFragment.appendChild(createShowElement(show, 'remove'));
+          fragment.appendChild(createShowElement(show, 'remove'));
         }
-        showList.appendChild(documentFragment);
+        showList.appendChild(fragment);
       }
 
       function renderEpisodes(groupedEpisodes) {
         ['recent', 'upcoming'].forEach((content) => {
           const contentTab = document.getElementById(`content-${content}`);
           contentTab.replaceChildren();
-          const documentFragment = document.createDocumentFragment();
+          const fragment = document.createDocumentFragment();
 
           Object.entries(getGroupedEpisodes(content)).forEach(([date, episodes]) => {
             const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-
             const airDate = new Date(date).toLocaleDateString('en-GB', dateOptions);
 
             const dateElement = document.createElement('div');
             dateElement.className = 'list-header';
             dateElement.textContent = airDate;
-            documentFragment.appendChild(dateElement)
+            fragment.appendChild(dateElement);
             
             episodes.forEach((episode) => {
-              const episodeElement = document.createElement('div');
-              episodeElement.className = 'show'; // TODO: rename class
+              const episodeItem = document.createElement('div');
+              episodeItem.className = 'item';
 
-              const showImageElement = document.createElement('img');
-              showImageElement.src = episode.showImage;
+              const showImage = document.createElement('img');
+              showImage.src = episode.showImage;
 
-              const episodeInfoElement = document.createElement('div');
-              const showNameElement = document.createElement('div');
-              showNameElement.textContent = episode.showName;
-              const episodeNumberElement = document.createElement('div');
-              episodeNumberElement.textContent =
+              const episodeInfo = document.createElement('div');
+              episodeInfo.className = 'item-info';
+
+              const showName = document.createElement('div');
+              showName.textContent = episode.showName;
+              const episodeNumber = document.createElement('div');
+              episodeNumber.textContent =
                 `${episode.episodeNumber}x${episode.episodeSeason.toString().padStart(2, '0')} ${episode.episodeName}`;
 
-              episodeInfoElement.appendChild(showNameElement);
-              episodeInfoElement.appendChild(episodeNumberElement);
+              episodeInfo.appendChild(showName);
+              episodeInfo.appendChild(episodeNumber);
 
-              episodeElement.appendChild(showImageElement);
-              episodeElement.appendChild(episodeInfoElement);
+              episodeItem.appendChild(showImage);
+              episodeItem.appendChild(episodeInfo);
 
-              documentFragment.appendChild(episodeElement);
+              fragment.appendChild(episodeItem);
             });
           });
 
-          contentTab.appendChild(documentFragment);
+          contentTab.appendChild(fragment);
         });
       }
 
@@ -403,6 +417,7 @@
         const formData = new FormData(e.target);
         const searchInput = formData.get('search-input');
         if (searchInput) {
+          document.getElementById('search-input').blur();
           const shows = await fetchShows(searchInput);
           renderSearchResults(shows);
         }
@@ -411,12 +426,12 @@
       // Initialize backup/restore
       document.getElementById('backup').addEventListener('click', () => {
         const data = `data:text/json;charset=utf-8,${encodeURIComponent(localStorage.getItem('shows'))}`;
-        const downloadElement = document.createElement('a');
-        downloadElement.setAttribute('href',  data);
-        downloadElement.setAttribute('download', `watcher-backup-${new Date().toISOString()}.json`);
-        document.body.appendChild(downloadElement);
-        downloadElement.click();
-        document.body.removeChild(downloadElement);
+        const download = document.createElement('a');
+        download.setAttribute('href',  data);
+        download.setAttribute('download', `watcher-backup-${new Date().toISOString()}.json`);
+        document.body.appendChild(download);
+        download.click();
+        document.body.removeChild(download);
       });
 
       document.getElementById('restore').addEventListener('click', () => {
@@ -424,10 +439,9 @@
         fileSelector.addEventListener('change', (event) => {
           const fileList = event.target.files;
           const file = fileList[0];
-
           if (file) {
             const reader = new FileReader();
-            reader.readAsText(file, "UTF-8");
+            reader.readAsText(file, 'utf-8');
             reader.onload = function (e) {
               const showsToRestore = JSON.parse(e.target.result);
               showsToRestore.map(saveShow);
