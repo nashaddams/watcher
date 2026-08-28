@@ -16,6 +16,7 @@
         display: grid;
         grid-template-rows: 1fr auto;
         height: 100vh;
+        max-height: -webkit-fill-available;
         background-color: #0A1929;
         color: white;
       }
@@ -155,7 +156,7 @@
     <main>
       <div id="content-shows" class="content">
         <form>
-          <input type="text" name="searchInput" />
+          <input type="text" name="search-input" />
           <button type="submit">
             <img src="./img/search.svg" />
           </button>
@@ -259,6 +260,7 @@
             await saveShow(show);
             renderShows();
             renderEpisodes();
+            document.getElementById('close-search').click();
           })
         } else if (action === 'remove') {
           actionElement.src = './img/remove.svg';
@@ -399,12 +401,24 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const searchInput = formData.get('searchInput');
-        const shows = await fetchShows(searchInput);
-        renderSearchResults(shows);
+        const searchInput = formData.get('search-input');
+        if (searchInput) {
+          const shows = await fetchShows(searchInput);
+          renderSearchResults(shows);
+        }
       });
 
       // Initialize backup/restore
+      document.getElementById('backup').addEventListener('click', () => {
+        const data = `data:text/json;charset=utf-8,${encodeURIComponent(localStorage.getItem('shows'))}`;
+        const downloadElement = document.createElement('a');
+        downloadElement.setAttribute('href',  data);
+        downloadElement.setAttribute('download', `watcher-backup-${new Date().toISOString()}.json`);
+        document.body.appendChild(downloadElement);
+        downloadElement.click();
+        document.body.removeChild(downloadElement);
+      });
+
       document.getElementById('restore').addEventListener('click', () => {
         const fileSelector = document.getElementById('restore');
         fileSelector.addEventListener('change', (event) => {
@@ -415,26 +429,12 @@
             const reader = new FileReader();
             reader.readAsText(file, "UTF-8");
             reader.onload = function (e) {
-              try {
-                const showsToRestore = JSON.parse(e.target.result);
-                showsToRestore.map(saveShow);
-                setTimeout(() => renderShows(), 1000);
-              } catch (err) {
-                console.error('Restore parsing error', err);
-              }
+              const showsToRestore = JSON.parse(e.target.result);
+              showsToRestore.map(saveShow);
+              setTimeout(() => renderShows(), 1000);
             }
           }
         });
-      });
-
-      document.getElementById('backup').addEventListener('click', () => {
-        const data = `data:text/json;charset=utf-8,${encodeURIComponent(localStorage.getItem('shows'))}`;
-        const downloadElement = document.createElement('a');
-        downloadElement.setAttribute('href',  data);
-        downloadElement.setAttribute('download', `watcher-backup-${new Date().toISOString()}.json`);
-        document.body.appendChild(downloadElement);
-        downloadElement.click();
-        document.body.removeChild(downloadElement); 
       });
     </script>
   </body>
