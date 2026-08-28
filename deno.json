@@ -1,24 +1,23 @@
 {
   "tasks": {
-    "build": "deno bundle --platform browser --output public/main.js src/app.tsx",
-    "dev": "deno bundle --watch --platform browser --output public/main.js src/app.tsx & deno run -A jsr:@std/http/file-server public"
+    "lint": "deno lint && deno fmt --check && deno check",
+    "build": "deno bundle --minify --platform browser --output public/main.js src/app.tsx",
+    "dev": "deno bundle --watch --minify --platform browser --output public/main.js src/app.tsx & deno run -A jsr:@std/http/file-server public"
   },
   "imports": {
-    "@nashaddams/tmdb/v3": "jsr:@nashaddams/tmdb/v3",
-    "@std/async/debounce": "jsr:@std/async@1.0.14/debounce",
-    "dayjs": "https://esm.sh/dayjs@1.11.13",
-    "dayjs/plugin/relativeTime": "https://esm.sh/dayjs@1.11.13/plugin/relativeTime",
-    "dayjs/plugin/isBetween": "https://esm.sh/dayjs@1.11.13/plugin/isBetween",
-    "dayjs/plugin/localizedFormat": "https://esm.sh/dayjs@1.11.13/plugin/localizedFormat",
-    "react": "https://esm.sh/react@19.1.1?target=es2022",
-    "react-dom/client": "https://esm.sh/react-dom@19.1.1/client?target=es2022&external=react",
-    "react-router-dom": "https://esm.sh/react-router-dom@@7.8.0?target=es2022&external=react",
-    "styled-components": "https://esm.sh/styled-components@6.1.19?target=es2022&external=react",
-    "@smakss/react-scroll-direction": "https://esm.sh/@smakss/react-scroll-direction@4.2.0?target=es2022&external=react"
+    "@nashaddams/tmdb/v3": "jsr:@nashaddams/tmdb@0.1.0/v3",
+    "@std/async/debounce": "jsr:@std/async@1.5.0/debounce",
+    "dayjs": "npm:dayjs@1.11.21",
+    "react": "https://esm.sh/react@19.2.8?target=es2024",
+    "react/jsx-runtime": "https://esm.sh/react@19.2.8/jsx-runtime?target=es2024",
+    "react-dom/client": "https://esm.sh/react-dom@19.2.8/client?target=es2024&external=react",
+    "react-router-dom": "https://esm.sh/react-router-dom@@7.18.2?target=es2024&external=react",
+    "styled-components": "https://esm.sh/styled-components@6.4.4?target=es2024&external=react",
+    "@smakss/react-scroll-direction": "https://esm.sh/@smakss/react-scroll-direction@4.3.1?target=es2024&external=react"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "https://esm.sh/react@19.1.1",
+    "jsxImportSource": "react",
     "lib": ["deno.ns", "dom"]
   },
   "lint": {
