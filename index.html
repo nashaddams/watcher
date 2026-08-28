@@ -2,13 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 viewport-fit=cover" />
     <title>Watcher</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
-    <link rel="manifest" href="img/favicon/site.webmanifest">
-    <link rel="stylesheet" href="css/watcher.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="img/favicon/site.webmanifest" />
+    <link rel="stylesheet" href="css/watcher.css" />
   </head>
   <body>
     <main>
@@ -22,9 +22,7 @@
 
         <div id="show-list"></div>
 
-        <div id="missing-api-key">
-          Missing TMDB API key.<br>Add it in the settings below.
-        </div>
+        <div id="missing-api-key">Missing TMDB API key.<br />Add it in the settings below.</div>
 
         <div id="settings">Settings</div>
 
@@ -56,9 +54,13 @@
                 <img src="./img/save.svg" />
               </button>
             </form>
-            <p>Add a <a href="https://www.themoviedb.org/" target="_blank">
-              <img src="./img/tmdb.svg" class="tmdb-logo" />
-            </a> API key to add shows and movies.</p>
+            <p>
+              Add a
+              <a href="https://www.themoviedb.org/" target="_blank">
+                <img src="./img/tmdb.svg" class="tmdb-logo" />
+              </a>
+              API key to add shows and movies.
+            </p>
             <h2>F1</h2>
             <div class="f1-actions">
               <div>
@@ -67,7 +69,10 @@
               </div>
               <div id="f1-remove">Remove</div>
             </div>
-            <p>Add a F1 schedule (<code>####.json</code>) from <a href="https://github.com/sportstimes/f1/tree/main/_db/f1" target="_blank">sportstimes/f1</a>.</p>
+            <p>
+              Add a F1 schedule (<code>####.json</code>) from
+              <a href="https://github.com/sportstimes/f1/tree/main/_db/f1" target="_blank">sportstimes/f1</a>.
+            </p>
           </div>
           <img src="./img/close.svg" id="close-settings" class="overlay-close" />
         </div>
@@ -133,7 +138,7 @@
             store.removeShow(showId);
             renderSavedItems();
             renderRecentUpcoming();
-          }
+          },
         });
 
         const movieListElement = createListElement(movies, 'Movies', {
@@ -142,7 +147,7 @@
             store.removeMovie(movieId);
             renderSavedItems();
             renderRecentUpcoming();
-          }
+          },
         });
 
         showList.appendChild(showListElement);
@@ -159,7 +164,7 @@
           const fragment = document.createDocumentFragment();
 
           const sevenDaysFromNow = dayjs(dayjs().format('YYYY-MM-DD')).add(1, 'week');
-          const sevenDaysAgo = dayjs(dayjs().format('YYYY-MM-DD')).subtract(1, 'week')
+          const sevenDaysAgo = dayjs(dayjs().format('YYYY-MM-DD')).subtract(1, 'week');
 
           // Show episodes and movies in recent/upcoming tabs
           const recentUpcomingItems = [
@@ -168,13 +173,11 @@
             ...store.getF1(),
           ];
 
-          Object.entries(
-            getRecentUpcomingGroup(recentUpcomingItems, content)
-          ).forEach(([date, items]) => {
+          Object.entries(getRecentUpcomingGroup(recentUpcomingItems, content)).forEach(([date, items]) => {
             const releaseDate = dayjs(date);
             const releaseDateString =
-              content === 'upcoming' && releaseDate < sevenDaysFromNow ||
-              content === 'recent' && releaseDate > sevenDaysAgo
+              (content === 'upcoming' && releaseDate < sevenDaysFromNow) ||
+              (content === 'recent' && releaseDate > sevenDaysAgo)
                 ? releaseDate.format('dddd')
                 : releaseDate.format('dddd, MMMM Do');
 
@@ -200,12 +203,20 @@
         localStorage.setItem('activeTab', content);
 
         const links = document.querySelector('nav').children;
-        Array.from(links).filter((c) => c.id.includes(content)).map((c) => c.classList.add('selected'));
-        Array.from(links).filter((c) => !c.id.includes(content)).map((c) => c.classList.remove('selected'));
+        Array.from(links)
+          .filter((c) => c.id.includes(content))
+          .map((c) => c.classList.add('selected'));
+        Array.from(links)
+          .filter((c) => !c.id.includes(content))
+          .map((c) => c.classList.remove('selected'));
 
         const contents = document.querySelector('main').children;
-        Array.from(contents).filter((c) => c.id.includes(content)).map((c) => c.style.display = 'block');
-        Array.from(contents).filter((c) => !c.id.includes(content)).map((c) => c.style.display = 'none');
+        Array.from(contents)
+          .filter((c) => c.id.includes(content))
+          .map((c) => (c.style.display = 'block'));
+        Array.from(contents)
+          .filter((c) => !c.id.includes(content))
+          .map((c) => (c.style.display = 'none'));
       }
 
       document.getElementById('tab-collection').addEventListener('click', () => navigateTo('collection'));
@@ -222,9 +233,9 @@
       });
       document.getElementById('close-settings').addEventListener('click', () => {
         settingsContainer.style.display = 'none';
-      })
+      });
 
-      const tmdbForm = document.getElementById('tmdb-form')
+      const tmdbForm = document.getElementById('tmdb-form');
       tmdbForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -253,9 +264,9 @@
       document.getElementById('close-search').addEventListener('click', () => {
         document.getElementById('search-container').style.display = 'none';
         document.getElementById('search-results').replaceChildren();
-      })
+      });
 
-      const searchForm = document.getElementById('search-form')
+      const searchForm = document.getElementById('search-form');
       searchForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -281,7 +292,7 @@
             renderSavedItems();
             renderRecentUpcoming();
             document.getElementById('close-search').click();
-          }
+          },
         });
 
         const movieListElement = createListElement(movies, 'Movies', {
@@ -292,7 +303,7 @@
             renderSavedItems();
             renderRecentUpcoming();
             document.getElementById('close-search').click();
-          }
+          },
         });
 
         searchResults.appendChild(showListElement);
@@ -307,7 +318,7 @@
         const encodedBackupString = encodeURIComponent(JSON.stringify(store.createBackup()));
         const data = `data:text/json;charset=utf-8,${encodedBackupString}`;
         const download = document.createElement('a');
-        download.setAttribute('href',  data);
+        download.setAttribute('href', data);
         download.setAttribute('download', `watcher-backup-${new Date().toISOString()}.json`);
         document.body.appendChild(download);
         download.click();
@@ -332,7 +343,7 @@
                 renderSavedItems();
                 renderRecentUpcoming();
               }, 1000);
-            }
+            };
           }
         });
       });
@@ -348,7 +359,7 @@
             reader.onload = function (e) {
               store.saveF1(JSON.parse(e.target.result));
               setTimeout(() => renderRecentUpcoming(), 1000);
-            }
+            };
           }
         });
       });
@@ -362,9 +373,18 @@
        * Initialize application
        */
       showLoadingIndicator();
-      Promise.all(store.getShows().map((s) => api.fetchShowDetails(s.id)))
-        .then((shows) => shows.map((s) => store.saveShow(s)))
-        .catch((e) => console.warn('Unable to refresh show details.', e))
+
+      async function initializeCollection() {
+        await Promise.all(store.getMovies().map((m) => api.fetchMovieDetails(m.id))).then((movies) =>
+          movies.map((m) => store.saveMovie(m))
+        );
+        await Promise.all(store.getShows().map((s) => api.fetchShowDetails(s.id))).then((shows) =>
+          shows.map((s) => store.saveShow(s))
+        );
+      }
+
+      initializeCollection()
+        .catch((e) => console.warn('Unable to refresh collection.', e))
         .finally(() => {
           initializeApiUi(store.getTmdbApiKey());
           navigateTo(localStorage.getItem('activeTab') || 'recent');
