@@ -4,6 +4,7 @@ import { H1 } from "../shared/elements.tsx";
 import { Item } from "../shared/item.tsx";
 import { Search } from "./search.tsx";
 import { Icon } from "./icons.tsx";
+import { Confirm } from "./confirm.tsx";
 
 type Props = {
   apiKey: string;
@@ -52,7 +53,14 @@ export function Library(
               : ""}
             posterPath={s.posterPath}
             status={s.status}
-            action={<Icon.Remove onClick={() => removeShow(s.id)} />}
+            action={
+              <Confirm
+                message={`Remove "${s.name}"?`}
+                onConfirm={() => removeShow(s.id)}
+              >
+                <Icon.Remove />
+              </Confirm>
+            }
             link={`/show/${s.id}`}
           />
         ))}
@@ -67,7 +75,14 @@ export function Library(
               : ""}
             posterPath={m.posterPath}
             status={m.status}
-            action={<Icon.Remove onClick={() => removeMovie(m.id)} />}
+            action={
+              <Confirm
+                message={`Remove "${m.name}"?`}
+                onConfirm={() => removeMovie(m.id)}
+              >
+                <Icon.Remove />
+              </Confirm>
+            }
             link={`/movie/${m.id}`}
           />
         ))}

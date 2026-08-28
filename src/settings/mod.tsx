@@ -11,7 +11,7 @@ const Section = styled.div`
   margin-bottom: 24px;
 
   &:last-child {
-    margin-bottom: 0;
+    margin-bottom: 96px;
   }
 `;
 
@@ -29,10 +29,6 @@ const Select = styled.select`
   width: 210px;
   /* Light arrow color */
   color-scheme: dark;
-
-  &:last-child {
-    margin-bottom: 96px;
-  }
 `;
 
 type Props = {

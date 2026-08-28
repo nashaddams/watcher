@@ -5,7 +5,7 @@ export const Color = {
   BgSecondary: "#192533",
   Text: "white",
   Accent: "#ffab00",
-};
+} as const;
 
 export const GlobalStyle = createGlobalStyle`
   * {
