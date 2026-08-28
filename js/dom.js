@@ -1,3 +1,11 @@
+function showLoadingIndicator() {
+  document.getElementById('load-container').style.display = 'block';
+}
+
+function hideLoadingIndicator() {
+  document.getElementById('load-container').style.display = 'none';
+}
+
 /**
  * Create details overlay for saved shows and movies
  * @param {Object} item show or movie
