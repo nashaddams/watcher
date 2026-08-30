@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { styled } from "styled-components";
 import { Color } from "../global.tsx";
 import { H2 } from "../shared/elements.tsx";
@@ -28,10 +28,12 @@ export function BackupRestore(
 ) {
   const [restoreInput, setRestoreInput] = useState<string>("");
 
-  const backupObj = JSON.stringify({
-    shows: showIds,
-    movies: movieIds,
-  });
+  const backupObj = useMemo(() =>
+    JSON.stringify({
+      created: new Date().toISOString(),
+      shows: showIds,
+      movies: movieIds,
+    }), [showIds.length, movieIds.length]);
 
   return (
     <>
@@ -60,9 +62,21 @@ export function BackupRestore(
         />
         <Form.SaveButton
           onClick={() => {
-            if (restoreInput !== "") {
+            const input = restoreInput.trim();
+
+            if (input !== "") {
               try {
-                restoreShowsAndMovies(JSON.parse(restoreInput));
+                const { shows, movies } = JSON.parse(input);
+
+                if (
+                  !Array.isArray(shows) || !Array.isArray(movies) ||
+                  !shows.every((item) => typeof item === "number") ||
+                  !movies.every((item) => typeof item === "number")
+                ) {
+                  throw new Error("Invalid shows/movies format");
+                }
+
+                restoreShowsAndMovies({ shows, movies });
               } catch (err) {
                 console.warn("Invalid restore input.", err);
                 setRestoreInput("");
